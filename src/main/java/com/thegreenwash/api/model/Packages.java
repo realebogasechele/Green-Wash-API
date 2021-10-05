@@ -2,16 +2,22 @@ package com.thegreenwash.api.model;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 
 public class Packages {
     @Id
     private String packageID;
 
+    @Field
     private String promotionID;
+    @Field
     private String packageName;
+    @Field
     private double standardPrice;
+    @Field
     private double suvPrice;
+    @Field
     private String description;
 
 
