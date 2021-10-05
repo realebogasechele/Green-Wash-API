@@ -14,6 +14,8 @@ public class Packages {
     private double suvPrice;
     private String description;
 
+    public Packages() {
+    }
 
     public Packages(String packageID, String promotionID, String packageName,
                     double standardPrice, double suvPrice, String description)
@@ -66,11 +68,11 @@ public class Packages {
         this.packageID = packageName;
     }
 
-    public void setStandardPrice(float standardPrice){
+    public void setStandardPrice(double standardPrice){
         this.standardPrice = standardPrice;
     }
 
-    public void setSuvPrice(float suvPrice){
+    public void setSuvPrice(double suvPrice){
         this.suvPrice = suvPrice;
     }
 
