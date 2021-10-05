@@ -3,31 +3,45 @@ package com.thegreenwash.api.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-public class Promotion extends Packages {
+public class Promotion{
     @Id
     private String promotionId;
 
     @Field
     private String packageId;
     @Field
+    private String standardPrice;
+    @Field
+    private String suvPrice;
+    @Field
     private boolean isEnabled;
 
    public Promotion() {
     }
 
-    public Promotion(String promotionId, String packageId, boolean isEnabled, String packageName, double standardPrice) {
-        this.promotionId = promotionId;
+    public Promotion(String packageId, String standardPrice, String suvPrice, boolean isEnabled) {
         this.packageId = packageId;
+        this.standardPrice = standardPrice;
+        this.suvPrice = suvPrice;
         this.isEnabled = isEnabled;
-        setPackageName(packageName);
-        setStandardPrice(standardPrice);
     }
 
-    public Promotion(String promotionId, String packageId, boolean isEnabled) {
-        this.promotionId = promotionId;
-        this.packageId = packageId;
-        this.isEnabled = isEnabled;
+    public String getStandardPrice() {
+        return standardPrice;
     }
+
+    public void setStandardPrice(String standardPrice) {
+        this.standardPrice = standardPrice;
+    }
+
+    public String getSuvPrice() {
+        return suvPrice;
+    }
+
+    public void setSuvPrice(String suvPrice) {
+        this.suvPrice = suvPrice;
+    }
+
 
     public String getPromotionId() {
         return promotionId;

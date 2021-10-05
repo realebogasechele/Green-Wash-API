@@ -7,6 +7,8 @@ import com.thegreenwash.api.repository.ClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,6 +61,10 @@ public class ClientService {
         return clientRepo.findByCellNum(cellNum);
     }
 
+    public List<LocalTime> getSugestedTimes(String complexId, String packageId, LocalDate date){
+        return bookingService.getSuggestedTimes(complexId, packageId, date);
+    }
+
     public String sendOtp(String cellNum){
         try{
             otpService.send(cellNum);
@@ -67,5 +73,9 @@ public class ClientService {
             e.printStackTrace();
         }
         return "OTP successfully sent";
+    }
+
+    public void deleteClient(String clientId){
+        //deactivate client
     }
 }

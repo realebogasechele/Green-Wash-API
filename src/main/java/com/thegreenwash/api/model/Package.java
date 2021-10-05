@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 
-public class Packages {
+public class Package {
     @Id
     private String packageID;
 
@@ -14,24 +14,29 @@ public class Packages {
     @Field
     private String packageName;
     @Field
+    private long minutes;
+    @Field
     private double standardPrice;
     @Field
     private double suvPrice;
     @Field
     private String description;
+    @Field
+    private Boolean onPromotion;
 
-    public Packages() {
+    public Package() {
     }
 
-    public Packages(String packageID, String promotionID, String packageName,
-                    double standardPrice, double suvPrice, String description)
-    {
-        this.packageID = packageID;
+    public Package(String promotionID, String packageName, long minutes,
+                   double standardPrice, double suvPrice, String description,
+                   Boolean onPromotion) {
         this.promotionID = promotionID;
         this.packageName = packageName;
+        this.minutes = minutes;
         this.standardPrice = standardPrice;
         this.suvPrice = suvPrice;
         this.description = description;
+        this.onPromotion = onPromotion;
     }
 
     //Getters
@@ -59,7 +64,13 @@ public class Packages {
         return this.description;
     }
 
+    public long getMinutes() {
+        return minutes;
+    }
 
+    public Boolean getOnPromotion() {
+        return onPromotion;
+    }
 
     //Setters
     public void setPackageID(String packageID){
@@ -86,10 +97,11 @@ public class Packages {
         this.description = description;
     }
 
+    public void setMinutes(long minutes) {
+        this.minutes = minutes;
+    }
 
-
-
-
-
-
+    public void setOnPromotion(Boolean onPromotion) {
+        this.onPromotion = onPromotion;
+    }
 }

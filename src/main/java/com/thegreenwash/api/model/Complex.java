@@ -26,11 +26,15 @@ public class Complex {
     private String cellNum;
     @Field
     private List<String> units;
+    @Field
+    private List<String> agents;
 
     public Complex() {
     }
 
-    public Complex(String complexName, String address, String telephoneNum, LocalTime startTime, LocalTime endTime, String cellNum, List<String> units) {
+    public Complex(String complexName, String address, String telephoneNum,
+                   LocalTime startTime, LocalTime endTime, String cellNum,
+                   List<String> units, List<String> agents) {
         this.complexName = complexName;
         this.address = address;
         this.telephoneNum = telephoneNum;
@@ -38,6 +42,15 @@ public class Complex {
         this.endTime = endTime;
         this.cellNum = cellNum;
         this.units = units;
+        this.agents = agents;
+    }
+
+    public List<String> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(List<String> agents) {
+        this.agents = agents;
     }
 
     public LocalTime getStartTime() {
