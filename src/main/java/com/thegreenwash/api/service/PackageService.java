@@ -26,9 +26,19 @@ public class PackageService {
     }
 
 
-    public void addPackage(Package pack){
+    public String addPackage(Package pack){
         pack.setOnPromotion(false);
         packageRepo.save(pack);
+        return "Package created!";
     }
 
+    public String updatePackage(Package pack) {
+        packageRepo.save(pack);
+        return "Updated successfully!";
+    }
+
+    public String removePackage(String packageId) {
+        packageRepo.deleteById(packageId);
+        return "Success!";
+    }
 }

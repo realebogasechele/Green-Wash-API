@@ -23,7 +23,7 @@ public class PromotionService {
     }
 
 
-    public void updatePromotion(Promotion promotion){
+    public String updatePromotion(Promotion promotion){
         if(!promotion.isEnabled()){
             Package pack = packageRepo.findById(promotion.getPackageId())
                     .orElseThrow(()-> new PackageNotFoundException("Not Found!"));
@@ -31,6 +31,7 @@ public class PromotionService {
             packageRepo.save(pack);
         }
         promotionRepo.save(promotion);
+        return "Success!";
     }
 
     public List<Promotion> getPromotions(){

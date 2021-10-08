@@ -1,5 +1,6 @@
 package com.thegreenwash.api.service;
 
+import com.thegreenwash.api.exception.BookingNotFoundException;
 import com.thegreenwash.api.exception.ComplexNotFoundException;
 import com.thegreenwash.api.exception.PackageNotFoundException;
 import com.thegreenwash.api.model.Booking;
@@ -91,12 +92,19 @@ public class BookingService {
         return suggestedTimes;
     }
 
+    public Booking findById(String bookingId){
+        return bookingRepo.findById(bookingId).orElseThrow(()-> new BookingNotFoundException("Booking does not exist!"));
+    }
+
     public List<Booking> clientViewBookings(String clientId){
-        return bookingRepo.findAllByClientId(clientId);
+        return bookingRepo.findAllByClientId(clientId).orElseThrow(()-> new BookingNotFoundException("No Bookings!"));
     }
 
     public List<Booking> agentViewBookings(String agentId){
-        return (bookingRepo.findAllByAgentId(agentId));
+        return (bookingRepo.findAllByAgentId(agentId)).orElseThrow(()-> new BookingNotFoundException("No Bookings!"));
     }
 
+    public List<Booking> adminViewBookings() {
+        return bookingRepo.findAll();
+    }
 }

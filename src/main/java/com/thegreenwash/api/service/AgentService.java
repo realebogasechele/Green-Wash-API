@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+
 @Service
 public class AgentService {
     public final AgentRepo agentRepo;
@@ -24,8 +26,8 @@ public class AgentService {
     }
 
     public String addAgent(Agent agent){
-
-        if(agentRepo.existsById(agent.getAgentId())) {
+        Agent temp = agentRepo.findByCellNum(agent.getCellNum());
+        if(!Objects.isNull(temp)) {
             return "Agent already exists!";
         }
         else{
@@ -36,8 +38,9 @@ public class AgentService {
             return "Success";
         }
     }
-    public void updateAgent(Agent agent){
+    public String updateAgent(Agent agent){
         agentRepo.save(agent);
+        return "Agent updated successfully!";
     }
 
     public String login(String cellNum, String password){
@@ -48,5 +51,13 @@ public class AgentService {
 
     public List<Booking> viewBookings(String agentId){
         return bookingService.agentViewBookings(agentId);
+    }
+
+    public String disableAgent(String agentId) {
+        return "Agent disabled!";
+    }
+
+    public Agent findById(String agentId){
+        return agentRepo.findById(agentId).orElseThrow(()-> new AgentNotFoundException("Agent does not exist!"));
     }
 }

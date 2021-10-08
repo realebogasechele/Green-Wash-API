@@ -11,6 +11,8 @@ public class Vehicle {
     private String vehicleId;
 
     @Field
+    private String clientId;
+    @Field
     private String modelName;
     @Field
     private String vehicleRegistration;
@@ -19,10 +21,19 @@ public class Vehicle {
 
     public Vehicle(){}
 
-    public Vehicle(String modelName, String vehicleRegistration, String vehicleType) {
+    public Vehicle(String clientId, String modelName, String vehicleRegistration, String vehicleType) {
+        this.clientId = clientId;
         this.modelName = modelName;
         this.vehicleRegistration = vehicleRegistration;
         this.vehicleType = vehicleType;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     public String getVehicleId() {

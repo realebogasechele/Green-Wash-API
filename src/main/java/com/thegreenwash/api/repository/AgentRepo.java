@@ -11,4 +11,5 @@ public interface AgentRepo extends MongoRepository<Agent, String> {
 
     Optional<List<Agent>> findAllByComplexId(String complexId);
 
+   Agent findByCellNum(String cellNum);
 }

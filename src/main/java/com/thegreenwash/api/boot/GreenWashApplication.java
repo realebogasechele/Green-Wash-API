@@ -23,6 +23,8 @@ public class GreenWashApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/client").allowedOrigins("*");
+				registry.addMapping("/admin").allowedOrigins("*");
+				registry.addMapping("/admin").allowedOrigins("*");
 			}
 		};
 	}
