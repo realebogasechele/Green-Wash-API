@@ -4,10 +4,12 @@ import com.thegreenwash.api.exception.AdminNotFoundException;
 import com.thegreenwash.api.model.*;
 import com.thegreenwash.api.model.Package;
 import com.thegreenwash.api.repository.AdminRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
+@Service
 public class AdminService {
     private final AdminRepo adminRepo;
     private final AgentService agentService;
@@ -16,6 +18,7 @@ public class AdminService {
     private final PackageService packageService;
     private final PromotionService promotionService;
 
+    @Autowired
     public AdminService(AdminRepo adminRepo, AgentService agentService, BookingService bookingService,
                         ComplexService complexService, PackageService packageService,
                         PromotionService promotionService) {

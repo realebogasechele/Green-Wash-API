@@ -7,10 +7,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 public class Package {
     @Id
-    private String packageID;
+    private String packageId;
 
     @Field
-    private String promotionID;
+    private String promotionId;
     @Field
     private String packageName;
     @Field
@@ -27,10 +27,10 @@ public class Package {
     public Package() {
     }
 
-    public Package(String promotionID, String packageName, long minutes,
-                   double standardPrice, double suvPrice, String description,
-                   Boolean onPromotion) {
-        this.promotionID = promotionID;
+    public Package(String promotionId, String packageName, long minutes,
+                   double standardPrice, double suvPrice,
+                   String description, Boolean onPromotion) {
+        this.promotionId = promotionId;
         this.packageName = packageName;
         this.minutes = minutes;
         this.standardPrice = standardPrice;
@@ -40,12 +40,12 @@ public class Package {
     }
 
     //Getters
-    public String getPackageID(){
-        return this.packageID;
+    public String getPackageId() {
+        return packageId;
     }
 
-    public String getPromotionID(){
-        return this.promotionID;
+    public String getPromotionId() {
+        return promotionId;
     }
 
     public String getPackageName(){
@@ -73,16 +73,16 @@ public class Package {
     }
 
     //Setters
-    public void setPackageID(String packageID){
-        this.packageID = packageID;
+    public void setPackageId(String packageId) {
+        this.packageId = packageId;
     }
 
-    public void setPromotionID(String promotionID){
-        this.promotionID = promotionID;
+    public void setPromotionId(String promotionId) {
+        this.promotionId = promotionId;
     }
 
     public void setPackageName(String packageName){
-        this.packageID = packageName;
+        this.packageName = packageName;
     }
 
     public void setStandardPrice(double standardPrice){

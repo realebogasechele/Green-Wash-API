@@ -2,12 +2,16 @@ package com.thegreenwash.api.service;
 
 import com.thegreenwash.api.model.Complex;
 import com.thegreenwash.api.repository.ComplexRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ComplexService {
     private final ComplexRepo complexRepo;
 
+    @Autowired
     public ComplexService(ComplexRepo complexRepo) {
         this.complexRepo = complexRepo;
     }
