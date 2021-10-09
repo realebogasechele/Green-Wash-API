@@ -114,6 +114,7 @@ public class AdminController {
         List<Package> packages = adminService.getPackages();
         return new ResponseEntity<>(packages, HttpStatus.ACCEPTED);
     }
+
     //Promotion Related
     @PostMapping("/promotion/add")
     public ResponseEntity<String> addPromotion(@RequestBody Promotion promotion){
