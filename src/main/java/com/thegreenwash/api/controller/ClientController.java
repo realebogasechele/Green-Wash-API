@@ -51,6 +51,7 @@ public class ClientController {
        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
+    //add clientId for confirmation
     @GetMapping("/verifyOtp/{otpNumber}/{time}")
     public ResponseEntity<String> verifyOtp(@PathVariable("otpNumber") Integer otpNumber,
                                             @PathVariable("date") ZonedDateTime time){

@@ -33,7 +33,10 @@ public class BookingService {
     public String addBooking(Booking booking){
         //Adds a booking to google calendar and booking database
         booking.setAgentId(assignAgent(booking.getComplexId()));
-        return "completeness status(Complete/Incomplete)";
+        booking.setEndTime(booking.getStartTime().plusMinutes(
+                packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15));
+        bookingRepo.save(booking);
+        return "Booking added successfully!";
     }
 
     public String assignAgent(String complexId){
@@ -67,7 +70,7 @@ public class BookingService {
         else {
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Africa/Harare"));
             LocalTime time = now.toLocalTime();
-            for (int i = 0; i < suggestedTimes.size(); i++) {
+            for (int i = 0; i < bookings.size(); i++) {
                 LocalTime currentBookingTime = bookings.get(i).getStartTime().toLocalTime();
                 /*Checks if time is the same as the start of the complexes start time or before the complexes start time
                  * and before the time of the next booking*/

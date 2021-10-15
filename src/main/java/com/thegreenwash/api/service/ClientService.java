@@ -1,9 +1,11 @@
 package com.thegreenwash.api.service;
 
 import com.thegreenwash.api.exception.ClientNotFoundException;
+import com.thegreenwash.api.exception.ComplexNotFoundException;
 import com.thegreenwash.api.model.*;
 import com.thegreenwash.api.model.Package;
 import com.thegreenwash.api.repository.ClientRepo;
+import com.thegreenwash.api.repository.ComplexRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,28 +23,48 @@ public class ClientService {
     private final BookingService bookingService;
     private final VehicleService vehicleService;
     private final AgentService agentService;
+    private final ComplexRepo complexRepo;
 
     @Autowired
-    public ClientService(ClientRepo clientRepo, PackageService packageService, OtpService otpService, BookingService bookingService, VehicleService vehicleService, AgentService agentService) {
+    public ClientService(ClientRepo clientRepo, PackageService packageService,
+                         OtpService otpService, BookingService bookingService,
+                         VehicleService vehicleService, AgentService agentService,
+                         ComplexRepo complexRepo) {
         this.clientRepo = clientRepo;
         this.packageService = packageService;
         this.otpService = otpService;
         this.bookingService = bookingService;
         this.vehicleService = vehicleService;
         this.agentService = agentService;
+        this.complexRepo = complexRepo;
     }
     //Client related
     public String addClient(Client client){
-        Client temp = clientRepo.findByCellNumAndPasswordAndDeviceId(client.getCellNum(), client.getPassword(), client.getDeviceId());
-        Client temp2 = clientRepo.findByCellNum(client.getCellNum());
-        Client temp3 = clientRepo.findByDeviceId(client.getDeviceId());
-
-        if(!Objects.isNull(temp) || !Objects.isNull(temp2) || !Objects.isNull(temp3)) {
-            return "User exists";
+        List<String> units = complexRepo.findById(client.getComplexId()).orElseThrow(
+                ()-> new ComplexNotFoundException("Not Found!")).getUnits();
+        int i = 0;
+        boolean found = false;
+        while(i != units.size() || found == false){
+            for(i = 0; i < units.size(); i++){
+                if (units.get(i) == client.getUnitNum()){
+                    found = true;
+                }
+            }
         }
-        else{
-            clientRepo.save(client);
-            return("Success!");
+        if(!found){
+            return "Unit does not exist";
+        }else {
+            Client temp = clientRepo.findByCellNum(client.getCellNum());
+            Client temp2 = clientRepo.findByUnitNum(client.getUnitNum());
+
+            if (!Objects.isNull(temp)) {
+                return "User exists";
+            } else if (!Objects.isNull(temp2)) {
+                return "An occupant of this unit number already exists!";
+            } else {
+                clientRepo.save(client);
+                return ("Success!");
+            }
         }
     }
 

@@ -18,6 +18,8 @@ public class Agent {
     @Field
     private String surname;
     @Field
+    private String id;
+    @Field
     private String cellNum;
     @Field
     private String address;
@@ -26,13 +28,14 @@ public class Agent {
 
     public Agent() {}
 
-    public Agent(String agentId, String complexId, String contractId,
-                 String name, String surname, String cellNum, String address, String password) {
-        this.agentId = agentId;
+    public Agent(String complexId, String contractId, String name,
+                 String surname, String id, String cellNum,
+                 String address, String password) {
         this.complexId = complexId;
         this.contractId = contractId;
         this.name = name;
         this.surname = surname;
+        this.id = id;
         this.cellNum = cellNum;
         this.address = address;
         this.password = password;
@@ -76,6 +79,14 @@ public class Agent {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCellNum() {

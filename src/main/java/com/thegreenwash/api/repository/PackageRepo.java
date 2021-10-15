@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PackageRepo extends MongoRepository <Package, String> {
     List<Package> findAllByOnPromotion(boolean onPromotion);
+
+    Package findByPackageId(String packageId);
 }

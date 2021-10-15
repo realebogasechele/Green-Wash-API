@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface ClientRepo extends MongoRepository<Client, String> {
     Client findByCellNum(String cellNum);
-    Client findByDeviceId(String deviceId);
-    Client findByCellNumAndPasswordAndDeviceId(String cellNum, String password, String deviceId);
     Optional<Client> findByCellNumAndPassword(String cellNum, String password);
+    Client findByUnitNum(String unitNum);
 }

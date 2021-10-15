@@ -23,6 +23,8 @@ public class Booking {
     @Field
     private String price;
     @Field
+    private String paymentMethod;
+    @Field
     private LocalDate date;
     @Field
     private ZonedDateTime startTime;
@@ -40,15 +42,18 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(String clientId, String vehicleId, String agentId, String complexId,
-                   String packageId, String price, LocalDate date, ZonedDateTime startTime, ZonedDateTime endTime,
-                   ZoneId timeZone, Boolean isComplete, Boolean refund, Boolean isRefunded) {
+    public Booking(String clientId, String vehicleId, String agentId,
+                   String complexId, String packageId, String price,
+                   String paymentMethod, LocalDate date, ZonedDateTime startTime,
+                   ZonedDateTime endTime, ZoneId timeZone, Boolean isComplete,
+                   Boolean refund, Boolean isRefunded) {
         this.clientId = clientId;
         this.vehicleId = vehicleId;
         this.agentId = agentId;
         this.complexId = complexId;
         this.packageId = packageId;
         this.price = price;
+        this.paymentMethod = paymentMethod;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -56,6 +61,14 @@ public class Booking {
         this.isComplete = isComplete;
         this.refund = refund;
         this.isRefunded = isRefunded;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public String getBookingId() {
