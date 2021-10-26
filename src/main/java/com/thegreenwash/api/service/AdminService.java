@@ -59,6 +59,10 @@ public class AdminService {
         return agentService.disableAgent(agentId);
     }
 
+    public Agent findByAgentId(String agentId) {
+        return agentService.findById(agentId);
+    }
+
     //Complex Related
     public String addComplex(Complex complex){
        return complexService.addComplex(complex);
@@ -72,6 +76,10 @@ public class AdminService {
         return complexService.deleteComplex(complexId);
     }
 
+    public Complex findByComplexId(String complexId){
+        return complexService.findById(complexId);
+    }
+
     public List<Complex> getComplexes(){
         return complexService.getAllComplexes();
     }
@@ -83,6 +91,10 @@ public class AdminService {
 
     public String updatePackage(Package pack){
         return packageService.updatePackage(pack);
+    }
+
+    public Package findByPackageId(String packageId){
+        return packageService.findById(packageId);
     }
 
     public List<Package> getPackages(){
@@ -103,8 +115,10 @@ public class AdminService {
     }
 
     public String removePromotion(String promotionId){
-        return removePromotion(promotionId);
+        return promotionService.removePromotion(promotionId);
     }
+
+    public Promotion findByPromotionId(String promotionId){ return promotionService.findById(promotionId);}
 
     public List<Promotion> getPromotions(){
         return promotionService.getPromotions();

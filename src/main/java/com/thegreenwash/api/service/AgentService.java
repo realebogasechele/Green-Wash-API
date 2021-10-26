@@ -31,7 +31,7 @@ public class AgentService {
             return "Agent already exists!";
         }
         else{
-            complexRepo.findById(agent.getComplexId()).orElseThrow(
+            complexRepo.findByComplexName(agent.getComplexName()).orElseThrow(
                     ()-> new ComplexNotFoundException("Not Found!"))
                     .getAgents().add(agent.getAgentId());
             agentRepo.save(agent);
@@ -59,5 +59,16 @@ public class AgentService {
 
     public Agent findById(String agentId){
         return agentRepo.findById(agentId).orElseThrow(()-> new AgentNotFoundException("Agent does not exist!"));
+    }
+    public List<Agent> findAll(){
+        return agentRepo.findAll();
+    }
+
+    public String incompleteBooking(Booking booking){
+        return bookingService.inCompleteBooking(booking);
+    }
+
+    public String completeBooking(Booking booking){
+        return bookingService.completeBooking(booking);
     }
 }

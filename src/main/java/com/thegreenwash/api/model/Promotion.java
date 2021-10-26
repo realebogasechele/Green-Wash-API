@@ -8,7 +8,9 @@ public class Promotion{
     private String promotionId;
 
     @Field
-    private String packageId;
+    private String promotionName;
+    @Field
+    private String packageName;
     @Field
     private String standardPrice;
     @Field
@@ -19,8 +21,9 @@ public class Promotion{
    public Promotion() {
     }
 
-    public Promotion(String packageId, String standardPrice, String suvPrice, boolean isEnabled) {
-        this.packageId = packageId;
+    public Promotion(String promotionName, String packageName, String standardPrice, String suvPrice, boolean isEnabled) {
+        this.promotionName = promotionName;
+        this.packageName = packageName;
         this.standardPrice = standardPrice;
         this.suvPrice = suvPrice;
         this.isEnabled = isEnabled;
@@ -42,6 +45,13 @@ public class Promotion{
         this.suvPrice = suvPrice;
     }
 
+    public String getPromotionName() {
+        return promotionName;
+    }
+
+    public void setPromotionName(String promotionName) {
+        this.promotionName = promotionName;
+    }
 
     public String getPromotionId() {
         return promotionId;
@@ -51,12 +61,12 @@ public class Promotion{
         this.promotionId = promotionId;
     }
 
-    public String getPackageId() {
-        return packageId;
+    public String getPackageName() {
+        return packageName;
     }
 
-    public void setPackageId(String packageId) {
-        this.packageId = packageId;
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     public boolean isEnabled() {

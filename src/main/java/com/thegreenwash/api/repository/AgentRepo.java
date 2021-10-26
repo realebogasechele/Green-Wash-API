@@ -9,7 +9,5 @@ import java.util.Optional;
 public interface AgentRepo extends MongoRepository<Agent, String> {
     Optional<Agent> findByCellNumAndPassword(String cellNum, String password);
 
-    Optional<List<Agent>> findAllByComplexId(String complexId);
-
    Agent findByCellNum(String cellNum);
 }

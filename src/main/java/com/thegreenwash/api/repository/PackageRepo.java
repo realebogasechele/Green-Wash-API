@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface PackageRepo extends MongoRepository <Package, String> {
     List<Package> findAllByOnPromotion(boolean onPromotion);
 
+    Optional<Package> findByPackageName(String packageName);
+
     Package findByPackageId(String packageId);
 }

@@ -1,5 +1,6 @@
 package com.thegreenwash.api.service;
 
+import com.thegreenwash.api.exception.ComplexNotFoundException;
 import com.thegreenwash.api.model.Complex;
 import com.thegreenwash.api.repository.ComplexRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ public class ComplexService {
     public String deleteComplex(String complexId){
         complexRepo.deleteById(complexId);
         return "Complex removed!";
+    }
+
+    public Complex findById(String complexId){
+        return complexRepo.findById(complexId).orElseThrow(()->new ComplexNotFoundException("Not Found!"));
     }
 
     public List<Complex> getAllComplexes() {

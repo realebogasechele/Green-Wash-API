@@ -110,4 +110,16 @@ public class BookingService {
     public List<Booking> adminViewBookings() {
         return bookingRepo.findAll();
     }
+
+    public String inCompleteBooking(Booking booking){
+        booking.setIncomplete(true);
+        bookingRepo.save(booking);
+        return "Incompletion Filed!";
+    }
+
+    public String completeBooking(Booking booking){
+        booking.setComplete(true);
+        bookingRepo.save(booking);
+        return "Completed booking filed!";
+    }
 }

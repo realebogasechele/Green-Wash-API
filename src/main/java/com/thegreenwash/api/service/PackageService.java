@@ -19,6 +19,10 @@ public class PackageService {
         this.packageRepo = packageRepo;
     }
 
+    public Package findById(String packageId){
+        return packageRepo.findById(packageId).orElseThrow(()-> new PackageNotFoundException("Not Found!"));
+    }
+
     //Returns all the packages that aren't on Promotion
     public List<Package> getPackages(){
         return packageRepo.findAllByOnPromotion(false);

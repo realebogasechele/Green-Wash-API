@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PromotionRepo extends MongoRepository<Promotion,String> {
-    Promotion findByPackageId(String packageId);
+    Promotion findByPackageName(String packageName);
 }
 

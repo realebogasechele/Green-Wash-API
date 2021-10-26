@@ -1,6 +1,7 @@
 package com.thegreenwash.api.service;
 
 import com.thegreenwash.api.exception.PackageNotFoundException;
+import com.thegreenwash.api.exception.PromotionNotFoundException;
 import com.thegreenwash.api.model.Package;
 import com.thegreenwash.api.model.Promotion;
 import com.thegreenwash.api.repository.PackageRepo;
@@ -21,11 +22,14 @@ public class PromotionService {
         this.promotionRepo = promotionRepo;
         this.packageRepo = packageRepo;
     }
+    public Promotion findById(String promotionId){
+        return promotionRepo.findById(promotionId).orElseThrow(()-> new PromotionNotFoundException("Not Found!"));
+    }
 
 
     public String updatePromotion(Promotion promotion){
         if(!promotion.isEnabled()){
-            Package pack = packageRepo.findById(promotion.getPackageId())
+            Package pack = packageRepo.findByPackageName(promotion.getPackageName())
                     .orElseThrow(()-> new PackageNotFoundException("Not Found!"));
             pack.setOnPromotion(false);
             packageRepo.save(pack);
@@ -40,7 +44,7 @@ public class PromotionService {
 
    public String addPromotion(Promotion promotion){
 
-        Promotion temp = promotionRepo.findByPackageId(promotion.getPackageId());
+        Promotion temp = promotionRepo.findByPackageName(promotion.getPackageName());
 
         if(!Objects.isNull(temp)){
             return "Promotion exists";
@@ -48,7 +52,7 @@ public class PromotionService {
         else{
             if(promotion.isEnabled()){
                 //Set onPromotion to true on the package to disable it from being found in packages
-                Package pack = packageRepo.findById(promotion.getPackageId())
+                Package pack = packageRepo.findByPackageName(promotion.getPackageName())
                         .orElseThrow(()-> new PackageNotFoundException("Not Found!"));
                 pack.setOnPromotion(true);
                 packageRepo.save(pack);
@@ -56,6 +60,12 @@ public class PromotionService {
             promotionRepo.save(promotion);
             return("Success!");
         }
+    }
+
+    public String removePromotion(String promotionId){
+        promotionRepo.deleteById(promotionId);
+        return "Success";
+
     }
 
 

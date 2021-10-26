@@ -42,7 +42,7 @@ public class OtpService {
         int otpNumber=(int)(Math.random()*(max-min+1)+min);
 
         Otp otp = new Otp();
-        otp.setClientId(clientRepo.findByCellNum(cellNum).getClientId());
+        otp.setClientId(cellNum);
         otp.setOtpNumber(otpNumber);
         otp.setStartTime(currentDate);
         otp.setEndTime(currentDate.plusMinutes(1));

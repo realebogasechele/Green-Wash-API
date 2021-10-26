@@ -16,9 +16,9 @@ public class Package {
     @Field
     private long minutes;
     @Field
-    private double standardPrice;
+    private String standardPrice;
     @Field
-    private double suvPrice;
+    private String suvPrice;
     @Field
     private String description;
     @Field
@@ -27,9 +27,7 @@ public class Package {
     public Package() {
     }
 
-    public Package(String promotionId, String packageName, long minutes,
-                   double standardPrice, double suvPrice,
-                   String description, Boolean onPromotion) {
+    public Package(String promotionId, String packageName, long minutes, String standardPrice, String suvPrice, String description, Boolean onPromotion) {
         this.promotionId = promotionId;
         this.packageName = packageName;
         this.minutes = minutes;
@@ -52,12 +50,12 @@ public class Package {
         return this.packageName;
     }
 
-    public double getStandardPrice(){
-        return this.standardPrice;
+    public String getStandardPrice() {
+        return standardPrice;
     }
 
-    public double getSuvPrice(){
-        return this.suvPrice;
+    public String getSuvPrice() {
+        return suvPrice;
     }
 
     public String getDescription(){
@@ -85,11 +83,11 @@ public class Package {
         this.packageName = packageName;
     }
 
-    public void setStandardPrice(double standardPrice){
+    public void setStandardPrice(String standardPrice) {
         this.standardPrice = standardPrice;
     }
 
-    public void setSuvPrice(double suvPrice){
+    public void setSuvPrice(String suvPrice) {
         this.suvPrice = suvPrice;
     }
 

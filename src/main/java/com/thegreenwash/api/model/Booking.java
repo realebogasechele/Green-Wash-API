@@ -35,6 +35,10 @@ public class Booking {
     @Field
     private Boolean isComplete;
     @Field
+    private String reasonForIncomplete;
+    @Field
+    private Boolean isIncomplete;
+    @Field
     private Boolean refund;
     @Field
     private Boolean isRefunded;
@@ -46,7 +50,8 @@ public class Booking {
                    String complexId, String packageId, String price,
                    String paymentMethod, LocalDate date, ZonedDateTime startTime,
                    ZonedDateTime endTime, ZoneId timeZone, Boolean isComplete,
-                   Boolean refund, Boolean isRefunded) {
+                   String reasonForIncomplete, Boolean isIncomplete, Boolean refund,
+                   Boolean isRefunded) {
         this.clientId = clientId;
         this.vehicleId = vehicleId;
         this.agentId = agentId;
@@ -59,8 +64,26 @@ public class Booking {
         this.endTime = endTime;
         this.timeZone = timeZone;
         this.isComplete = isComplete;
+        this.reasonForIncomplete = reasonForIncomplete;
+        this.isIncomplete = isIncomplete;
         this.refund = refund;
         this.isRefunded = isRefunded;
+    }
+
+    public String getReasonForIncomplete() {
+        return reasonForIncomplete;
+    }
+
+    public void setReasonForIncomplete(String reasonForIncomplete) {
+        this.reasonForIncomplete = reasonForIncomplete;
+    }
+
+    public Boolean getIncomplete() {
+        return isIncomplete;
+    }
+
+    public void setIncomplete(Boolean incomplete) {
+        isIncomplete = incomplete;
     }
 
     public String getPaymentMethod() {

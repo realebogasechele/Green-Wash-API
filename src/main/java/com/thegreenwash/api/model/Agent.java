@@ -10,7 +10,7 @@ public class Agent {
     private String agentId;
 
     @Field
-    private String complexId;
+    private String complexName;
     @Field
     private String contractId;
     @Field
@@ -22,23 +22,81 @@ public class Agent {
     @Field
     private String cellNum;
     @Field
-    private String address;
+    private String street1;
+    @Field
+    private String street2;
+    @Field
+    private String city;
+    @Field
+    private String province;
+    @Field
+    private String postalCode;
     @Field
     private String password;
 
     public Agent() {}
 
-    public Agent(String complexId, String contractId, String name,
-                 String surname, String id, String cellNum,
-                 String address, String password) {
-        this.complexId = complexId;
+    public Agent(String complexName, String contractId, String name, String surname, String id, String cellNum, String street1, String street2, String city, String province, String postalCode, String password) {
+        this.complexName = complexName;
         this.contractId = contractId;
         this.name = name;
         this.surname = surname;
         this.id = id;
         this.cellNum = cellNum;
-        this.address = address;
+        this.street1 = street1;
+        this.street2 = street2;
+        this.city = city;
+        this.province = province;
+        this.postalCode = postalCode;
         this.password = password;
+    }
+
+    public String getComplexName() {
+        return complexName;
+    }
+
+    public void setComplexName(String complexName) {
+        this.complexName = complexName;
+    }
+
+    public String getStreet1() {
+        return street1;
+    }
+
+    public void setStreet1(String street1) {
+        this.street1 = street1;
+    }
+
+    public String getStreet2() {
+        return street2;
+    }
+
+    public void setStreet2(String street2) {
+        this.street2 = street2;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public String getAgentId() {
@@ -47,14 +105,6 @@ public class Agent {
 
     public void setAgentId(String agentId) {
         this.agentId = agentId;
-    }
-
-    public String getComplexId() {
-        return complexId;
-    }
-
-    public void setComplexId(String complexId) {
-        this.complexId = complexId;
     }
 
     public String getContractId() {
@@ -95,14 +145,6 @@ public class Agent {
 
     public void setCellNum(String cellNum) {
         this.cellNum = cellNum;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPassword() {

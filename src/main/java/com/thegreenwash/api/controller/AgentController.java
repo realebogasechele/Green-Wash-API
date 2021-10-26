@@ -34,8 +34,15 @@ public class AgentController {
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
     }
 
-    /*@PostMapping("/booking/complete")
+    @PostMapping("/booking/complete")
     public ResponseEntity<String> completeBooking(@RequestBody Booking booking){
-        String status = agentService.
-    }*/
+        String status = agentService.completeBooking(booking);
+        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/booking/incomplete")
+    public ResponseEntity<String> incompleteBooking(@RequestBody Booking booking){
+        String status = agentService.completeBooking(booking);
+        return new ResponseEntity<>(status,HttpStatus.ACCEPTED);
+    }
 }

@@ -48,23 +48,30 @@ public class AdminController {
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
     }
     //Agent Related
-    @PostMapping("/agents/add")
+    @PostMapping("/agent/add")
     public ResponseEntity<String> addAgent(@RequestBody Agent agent){
         String status = adminService.addAgent(agent);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
     }
 
-    @PostMapping("/agents/update")
+    @PostMapping("/agent/update")
     public ResponseEntity<String> updateAgent(@RequestBody Agent agent){
         String status = adminService.updateAgent(agent);
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/agents/disable/{agentId}")
+    @DeleteMapping("/agent/disable/{agentId}")
     public ResponseEntity<String> disableAgent(@PathVariable("agentId") String agentId){
         String status = adminService.disableAgent(agentId);
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/agent/get/{agentId}")
+    public ResponseEntity<Agent> getAgent(@PathVariable("agentId") String agentId){
+        Agent agent = adminService.findByAgentId(agentId);
+        return new ResponseEntity<>(agent, HttpStatus.ACCEPTED);
+    }
+
     //Complex Related
     @PostMapping("/complex/add")
     public ResponseEntity<String> addComplex(@RequestBody Complex complex){
@@ -90,6 +97,12 @@ public class AdminController {
         return new ResponseEntity<>(complexes, HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/complex/get/{complexId}")
+    public ResponseEntity<Complex> getComplexes(@PathVariable("complexId") String complexId){
+        Complex complex = adminService.findByComplexId(complexId);
+        return new ResponseEntity<>(complex, HttpStatus.ACCEPTED);
+    }
+
     //Package Related
     @PostMapping("/package/add")
     public ResponseEntity<String> addPackage(@RequestBody Package pack){
@@ -104,9 +117,15 @@ public class AdminController {
     }
 
     @DeleteMapping("/package/remove/{packageId}")
-    public ResponseEntity<String> removePackage(@PathVariable("packageId") String packageId){
+    public ResponseEntity<String> removePackage(@PathVariable("packageId") String packageId) {
         String status = adminService.removePackage(packageId);
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/package/get/{packageId}")
+    public ResponseEntity<Package> findPackageById(@PathVariable("packageId") String packageId){
+        Package pack = adminService.findByPackageId(packageId);
+        return new ResponseEntity<>(pack, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/package/getAll")
@@ -128,16 +147,16 @@ public class AdminController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/promotion/remove/{packageId}")
-    public ResponseEntity<String> removePromotion(@PathVariable("packageId") String promotionId){
+    @DeleteMapping("/promotion/remove/{promotionId}")
+    public ResponseEntity<String> removePromotion(@PathVariable("promotionId") String promotionId){
         String status = adminService.removePromotion(promotionId);
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/promotion/getAll")
-    public ResponseEntity<List<Promotion>> getPromotions(){
-        List<Promotion> promotions = adminService.getPromotions();
-        return new ResponseEntity<>(promotions, HttpStatus.ACCEPTED);
+    @GetMapping("/promotion/get/{promotionId}")
+    public ResponseEntity<Promotion> getPromotions(@PathVariable("promotionId") String promotionId){
+        Promotion promotion = adminService.findByPromotionId(promotionId);
+        return new ResponseEntity<>(promotion, HttpStatus.ACCEPTED);
     }
 
 }
