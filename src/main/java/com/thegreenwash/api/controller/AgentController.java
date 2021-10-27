@@ -28,7 +28,7 @@ public class AgentController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
     //Booking Related
-    @GetMapping("/booking/viewAll/{agentId}")
+    @GetMapping("/booking/all/{agentId}")
     public ResponseEntity<List<Booking>> viewAllBookings(@PathVariable("agentId") String agentId){
         List<Booking> bookings = agentService.viewBookings(agentId);
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
@@ -42,7 +42,7 @@ public class AgentController {
 
     @PostMapping("/booking/incomplete")
     public ResponseEntity<String> incompleteBooking(@RequestBody Booking booking){
-        String status = agentService.completeBooking(booking);
+        String status = agentService.incompleteBooking(booking);
         return new ResponseEntity<>(status,HttpStatus.ACCEPTED);
     }
 }

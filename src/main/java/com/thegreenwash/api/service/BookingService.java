@@ -122,4 +122,9 @@ public class BookingService {
         bookingRepo.save(booking);
         return "Completed booking filed!";
     }
+
+    public List<Booking> getBookings(String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        return bookingRepo.findByDate(localDate);
+    }
 }

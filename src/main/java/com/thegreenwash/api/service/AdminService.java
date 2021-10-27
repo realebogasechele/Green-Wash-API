@@ -59,6 +59,8 @@ public class AdminService {
         return agentService.disableAgent(agentId);
     }
 
+    public List<Agent> getAllAgents(){ return agentService.findAll();}
+
     public Agent findByAgentId(String agentId) {
         return agentService.findById(agentId);
     }
@@ -128,6 +130,7 @@ public class AdminService {
     public List<Booking> getAllBookings(){
         return bookingService.adminViewBookings();
     }
+    public List<Booking> getBookings(String date){return bookingService.getBookings(date);}
 
 
 }

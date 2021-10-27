@@ -47,6 +47,13 @@ public class AdminController {
         List<Booking> bookings = adminService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/booking/get/{date}")
+    public ResponseEntity<List<Booking>> viewBookings(@PathVariable("date") String date){
+        List<Booking> bookings = adminService.getBookings(date);
+        return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
+    }
+
     //Agent Related
     @PostMapping("/agent/add")
     public ResponseEntity<String> addAgent(@RequestBody Agent agent){
@@ -72,6 +79,12 @@ public class AdminController {
         return new ResponseEntity<>(agent, HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/agent/get/all")
+    public ResponseEntity<List<Agent>> getAllAgent(){
+        List<Agent> agents = adminService.getAllAgents();
+        return new ResponseEntity<>(agents, HttpStatus.ACCEPTED);
+    }
+
     //Complex Related
     @PostMapping("/complex/add")
     public ResponseEntity<String> addComplex(@RequestBody Complex complex){
@@ -91,7 +104,7 @@ public class AdminController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/complex/getAll")
+    @GetMapping("/complex/get/all")
     public ResponseEntity<List<Complex>> getComplexes(){
         List<Complex> complexes = adminService.getComplexes();
         return new ResponseEntity<>(complexes, HttpStatus.ACCEPTED);
@@ -128,7 +141,7 @@ public class AdminController {
         return new ResponseEntity<>(pack, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/package/getAll")
+    @GetMapping("/package/get/all")
     public ResponseEntity<List<Package>> getPackages(){
         List<Package> packages = adminService.getPackages();
         return new ResponseEntity<>(packages, HttpStatus.ACCEPTED);
@@ -153,10 +166,15 @@ public class AdminController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/promotion/get/all")
+    public ResponseEntity<List<Promotion>> getAllPromotions(){
+        List<Promotion> promotions = adminService.getPromotions();
+        return new ResponseEntity<>(promotions, HttpStatus.ACCEPTED);
+    }
+
     @GetMapping("/promotion/get/{promotionId}")
     public ResponseEntity<Promotion> getPromotions(@PathVariable("promotionId") String promotionId){
         Promotion promotion = adminService.findByPromotionId(promotionId);
         return new ResponseEntity<>(promotion, HttpStatus.ACCEPTED);
     }
-
 }
