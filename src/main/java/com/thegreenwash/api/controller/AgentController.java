@@ -34,9 +34,9 @@ public class AgentController {
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/booking/complete")
-    public ResponseEntity<String> completeBooking(@RequestBody Booking booking){
-        String status = agentService.completeBooking(booking);
+    @PostMapping("/booking/complete/{bookingId}")
+    public ResponseEntity<String> completeBooking(@PathVariable("bookingId") String bookingId){
+        String status = agentService.completeBooking(bookingId);
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 

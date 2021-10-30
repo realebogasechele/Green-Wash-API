@@ -140,4 +140,8 @@ public class ClientService {
     public List<Package> getPackages(){
         return packageService.getPackages();
     }
+
+    public Client getClientDetails(String clientId) {
+        return clientRepo.findById(clientId).orElseThrow(()-> new ClientNotFoundException("Does not exist!"));
+    }
 }

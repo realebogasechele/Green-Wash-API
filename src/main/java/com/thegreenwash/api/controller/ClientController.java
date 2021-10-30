@@ -41,7 +41,12 @@ public class ClientController {
     @PostMapping("/update")
     public ResponseEntity<String> updateClient(@RequestBody Client client){
         String status = clientService.updateClient(client);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+    @GetMapping("/get/{clientId}")
+    public ResponseEntity<Client> getClientDetails(@PathVariable("clientId") String clientId){
+        Client client = clientService.getClientDetails(clientId);
+        return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
     //Otp Related

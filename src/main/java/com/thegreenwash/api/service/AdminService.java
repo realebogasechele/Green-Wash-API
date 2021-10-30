@@ -133,4 +133,7 @@ public class AdminService {
     public List<Booking> getBookings(String date){return bookingService.getBookings(date);}
 
 
+    public Admin getAdminDetails(String adminId) {
+        return adminRepo.findById(adminId).orElseThrow(()-> new AdminNotFoundException("Does not exist!"));
+    }
 }

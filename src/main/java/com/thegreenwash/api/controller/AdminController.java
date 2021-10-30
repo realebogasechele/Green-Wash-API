@@ -40,6 +40,11 @@ public class AdminController {
         String status = adminService.login(cellNum,password);
         return new ResponseEntity<>(status,HttpStatus.ACCEPTED);
     }
+    @GetMapping("/get/{adminId}")
+    public ResponseEntity<Admin> getAdminDetails(@PathVariable("adminId") String adminId){
+        Admin admin = adminService.getAdminDetails(adminId);
+        return new ResponseEntity<>(admin, HttpStatus.OK);
+    }
 
     //Booking Related
     @GetMapping("/booking/viewBookings")

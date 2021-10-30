@@ -117,7 +117,8 @@ public class BookingService {
         return "Incompletion Filed!";
     }
 
-    public String completeBooking(Booking booking){
+    public String completeBooking(String bookingId){
+        Booking booking = bookingRepo.findById(bookingId).orElseThrow(()-> new BookingNotFoundException("Not Found!"));
         booking.setComplete(true);
         bookingRepo.save(booking);
         return "Completed booking filed!";

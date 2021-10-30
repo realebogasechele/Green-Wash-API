@@ -68,7 +68,7 @@ public class AgentService {
         return bookingService.inCompleteBooking(booking);
     }
 
-    public String completeBooking(Booking booking){
-        return bookingService.completeBooking(booking);
+    public String completeBooking(String bookingId){
+        return bookingService.completeBooking(bookingId);
     }
 }
