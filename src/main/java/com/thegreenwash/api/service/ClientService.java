@@ -40,31 +40,35 @@ public class ClientService {
     }
     //Client related
     public String addClient(Client client){
-        List<String> units = complexRepo.findById(client.getComplexId()).orElseThrow(
-                ()-> new ComplexNotFoundException("Not Found!")).getUnits();
-        int i = 0;
-        boolean found = false;
-        while(i != units.size() || found == false){
-            for(i = 0; i < units.size(); i++){
-                if (units.get(i) == client.getUnitNum()){
-                    found = true;
+        try {
+            List<String> units = complexRepo.findById(client.getComplexId()).orElseThrow(
+                    () -> new ComplexNotFoundException("Not Found!")).getUnits();
+            int i = 0;
+            boolean found = false;
+            while (i != units.size() || found == false) {
+                for (i = 0; i < units.size(); i++) {
+                    if (units.get(i) == client.getUnitNum()) {
+                        found = true;
+                    }
                 }
             }
-        }
-        if(!found){
-            return "Unit does not exist";
-        }else {
-            Client temp = clientRepo.findByCellNum(client.getCellNum());
-            Client temp2 = clientRepo.findByUnitNum(client.getUnitNum());
-
-            if (!Objects.isNull(temp)) {
-                return "User exists";
-            } else if (!Objects.isNull(temp2)) {
-                return "An occupant of this unit number already exists!";
+            if (!found) {
+                return "Unit does not exist";
             } else {
-                clientRepo.save(client);
-                return ("Success!");
+                Client temp = clientRepo.findByCellNum(client.getCellNum());
+                Client temp2 = clientRepo.findByUnitNum(client.getUnitNum());
+
+                if (!Objects.isNull(temp)) {
+                    return "User exists";
+                } else if (!Objects.isNull(temp2)) {
+                    return "An occupant of this unit number already exists!";
+                } else {
+                    clientRepo.save(client);
+                    return ("Success!");
+                }
             }
+        }catch (ComplexNotFoundException e) {
+            return "Complex Does Not Exist!";
         }
     }
 
@@ -78,9 +82,13 @@ public class ClientService {
     }
 
     public String login(String cellNum, String password){
-        clientRepo.findByCellNumAndPassword(cellNum, password)
-                .orElseThrow(()-> new ClientNotFoundException("Invalid cell number or password"));
-        return "Success!";
+        try {
+            clientRepo.findByCellNumAndPassword(cellNum, password)
+                    .orElseThrow(() -> new ClientNotFoundException("Invalid cell number or password"));
+            return "Success!";
+        }catch (ClientNotFoundException e){
+            return "Invalid cell number or password";
+        }
     }
 
     //Booking related
@@ -115,8 +123,8 @@ public class ClientService {
         return otpService.verifyOtp(otpNumber, time);
     }
 
-    public void resendOtp(String clientId){
-        otpService.resendOtp(clientId);
+    public void resendOtp(String cellNum){
+        otpService.resendOtp(cellNum);
     }
 
     //Vehicle Related

@@ -63,9 +63,9 @@ public class ClientController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/resendOtp/{clientId}")
-    public void resendOtp(@PathVariable("clientId") String clientId){
-        clientService.resendOtp(clientId);
+    @PostMapping("/resendOtp/{cellNum}")
+    public void resendOtp(@PathVariable("cellNum") String cellNum){
+        clientService.resendOtp(cellNum);
     }
 
     //Booking Related

@@ -29,10 +29,14 @@ public class PromotionService {
 
     public String updatePromotion(Promotion promotion){
         if(!promotion.isEnabled()){
-            Package pack = packageRepo.findByPackageName(promotion.getPackageName())
-                    .orElseThrow(()-> new PackageNotFoundException("Not Found!"));
-            pack.setOnPromotion(false);
-            packageRepo.save(pack);
+            try {
+                Package pack = packageRepo.findByPackageName(promotion.getPackageName())
+                        .orElseThrow(() -> new PackageNotFoundException("Not Found!"));
+                pack.setOnPromotion(false);
+                packageRepo.save(pack);
+            }catch (PackageNotFoundException p){
+                return "Package Not found!";
+            }
         }
         promotionRepo.save(promotion);
         return "Success!";
@@ -43,22 +47,24 @@ public class PromotionService {
     }
 
    public String addPromotion(Promotion promotion){
+        try {
+            Promotion temp = promotionRepo.findByPackageName(promotion.getPackageName());
 
-        Promotion temp = promotionRepo.findByPackageName(promotion.getPackageName());
-
-        if(!Objects.isNull(temp)){
-            return "Promotion exists";
-        }
-        else{
-            if(promotion.isEnabled()){
-                //Set onPromotion to true on the package to disable it from being found in packages
-                Package pack = packageRepo.findByPackageName(promotion.getPackageName())
-                        .orElseThrow(()-> new PackageNotFoundException("Not Found!"));
-                pack.setOnPromotion(true);
-                packageRepo.save(pack);
+            if (!Objects.isNull(temp)) {
+                return "Promotion exists";
+            } else {
+                if (promotion.isEnabled()) {
+                    //Set onPromotion to true on the package to disable it from being found in packages
+                    Package pack = packageRepo.findByPackageName(promotion.getPackageName())
+                            .orElseThrow(() -> new PackageNotFoundException("Not Found!"));
+                    pack.setOnPromotion(true);
+                    packageRepo.save(pack);
+                }
+                promotionRepo.save(promotion);
+                return ("Success!");
             }
-            promotionRepo.save(promotion);
-            return("Success!");
+        }catch (PackageNotFoundException e){
+            return "Package Not Found!";
         }
     }
 

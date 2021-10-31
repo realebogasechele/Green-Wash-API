@@ -29,9 +29,9 @@ public class OtpService {
         this.clientRepo = clientRepo;
     }
 
-    public void resendOtp(String clientId){
-        otpRepo.delete(otpRepo.findByClientId(clientId).orElseThrow(()-> new OtpNotFoundException("Otp does not exist!")));
-        send(clientRepo.findById(clientId).orElseThrow(()-> new ClientNotFoundException("Not found!")).getCellNum());
+    public void resendOtp(String cellNum){
+        otpRepo.delete(otpRepo.findByClientId(cellNum).orElseThrow(() -> new OtpNotFoundException("Otp does not exist!")));
+        send(cellNum);
     }
 
     public void send(String cellNum){
