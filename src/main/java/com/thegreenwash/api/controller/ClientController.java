@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -82,10 +83,10 @@ public class ClientController {
     }
 
     @GetMapping("booking/getSuggestedTimes/{complexId}/{packageId}/{date}")
-    public ResponseEntity<List<LocalTime>> getSuggestedTimes(@PathVariable("complexId") String complexId,
-                                                             @PathVariable("packageId") String packageId,
-                                                             @PathVariable("date") LocalDate date){
-        List<LocalTime> times = clientService.getSuggestedTimes(complexId,packageId,date);
+    public ResponseEntity<List<OffsetTime>> getSuggestedTimes(@PathVariable("complexId") String complexId,
+                                                              @PathVariable("packageId") String packageId,
+                                                              @PathVariable("date") String date){
+        List<OffsetTime> times = clientService.getSuggestedTimes(complexId,packageId,date);
         return new ResponseEntity<>(times, HttpStatus.ACCEPTED);
     }
 

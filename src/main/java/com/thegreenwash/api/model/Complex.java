@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.util.List;
 
 @Document
@@ -27,9 +29,9 @@ public class Complex {
     @Field
     private String telephoneNum;
     @Field
-    private LocalTime startTime;
+    private String startTime;
     @Field
-    private LocalTime endTime;
+    private String endTime;
     @Field
     private String cellNum;
     @Field
@@ -41,7 +43,10 @@ public class Complex {
     public Complex() {
     }
 
-    public Complex(String complexName, String street1, String street2, String city, String province, String postalCode, String telephoneNum, LocalTime startTime, LocalTime endTime, String cellNum, List<String> units, List<String> agents) {
+    public Complex(String complexName, String street1, String street2,
+                   String city, String province, String postalCode,
+                   String telephoneNum, String startTime, String endTime,
+                   String cellNum, List<String> units, List<String> agents) {
         this.complexName = complexName;
         this.street1 = street1;
         this.street2 = street2;
@@ -89,11 +94,11 @@ public class Complex {
         return telephoneNum;
     }
 
-    public LocalTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public LocalTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
@@ -143,11 +148,11 @@ public class Complex {
         this.telephoneNum = telephoneNum;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -100,7 +101,7 @@ public class ClientService {
         return bookingService.addBooking(booking);
     }
 
-    public List<LocalTime> getSuggestedTimes(String complexId, String packageId, LocalDate date){
+    public List<OffsetTime> getSuggestedTimes(String complexId, String packageId, String date){
         return bookingService.getSuggestedTimes(complexId, packageId, date);
     }
 
