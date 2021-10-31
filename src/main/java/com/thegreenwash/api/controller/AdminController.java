@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -57,6 +58,14 @@ public class AdminController {
     public ResponseEntity<List<Booking>> viewBookings(@PathVariable("date") String date){
         List<Booking> bookings = adminService.getBookings(date);
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/booking/get/{pageNo}/{pageSize}/{sortBy}")
+    public ResponseEntity<Map<String, Object>> getSortedBookings(@PathVariable("pageNo") int pageNo,
+                                                              @PathVariable("pageSize") int pageSize,
+                                                              @PathVariable("sortBy") String sortBy){
+        Map<String, Object> response = adminService.getSortedBookings(pageNo, pageSize, sortBy);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //Agent Related

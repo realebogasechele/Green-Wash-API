@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminService {
@@ -135,5 +136,9 @@ public class AdminService {
 
     public Admin getAdminDetails(String adminId) {
         return adminRepo.findById(adminId).orElseThrow(()-> new AdminNotFoundException("Does not exist!"));
+    }
+
+    public Map<String, Object> getSortedBookings(int pageNo, int pageSize, String sortBy) {
+        return bookingService.getSortedBookings(pageNo, pageSize, sortBy);
     }
 }

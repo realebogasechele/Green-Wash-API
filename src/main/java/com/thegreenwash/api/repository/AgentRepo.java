@@ -10,4 +10,6 @@ public interface AgentRepo extends MongoRepository<Agent, String> {
     Optional<Agent> findByCellNumAndPassword(String cellNum, String password);
 
    Agent findByCellNum(String cellNum);
+
+    Agent findBySurname(String surname);
 }

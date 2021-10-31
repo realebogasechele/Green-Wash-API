@@ -11,6 +11,10 @@ import com.thegreenwash.api.repository.BookingRepo;
 import com.thegreenwash.api.repository.ComplexRepo;
 import com.thegreenwash.api.repository.PackageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.*;
@@ -32,7 +36,7 @@ public class BookingService {
 
     public String addBooking(Booking booking){
         //Adds a booking to google calendar and booking database
-        booking.setAgentId(assignAgent(booking.getComplexId()));
+        booking.setAgentId(agentRepo.findBySurname(assignAgent(booking.getComplexId())).getAgentId());
         booking.setEndTime(booking.getStartTime().plusMinutes(
                 packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15));
         bookingRepo.save(booking);
@@ -127,5 +131,19 @@ public class BookingService {
     public List<Booking> getBookings(String date) {
         LocalDate localDate = LocalDate.parse(date);
         return bookingRepo.findByDate(localDate);
+    }
+
+    public Map<String, Object> getSortedBookings(int pageNo, int pageSize, String sortBy) {
+        Map<String, Object> response = new HashMap<>();
+
+        Sort sort = Sort.by(sortBy);
+        Pageable page = PageRequest.of(pageNo,pageSize, sort);
+        Page<Booking> bookingPage = bookingRepo.findAll(page);
+        response.put("data", bookingPage.getContent());
+        response.put("Total Number of Pages", bookingPage.getTotalPages());
+        response.put("Total Number of Elements", bookingPage.getTotalElements());
+        response.put("Current Page Number", bookingPage.getNumber());
+
+        return response;
     }
 }

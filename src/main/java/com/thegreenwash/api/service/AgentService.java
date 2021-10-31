@@ -4,6 +4,7 @@ import com.thegreenwash.api.exception.AgentNotFoundException;
 import com.thegreenwash.api.exception.ComplexNotFoundException;
 import com.thegreenwash.api.model.Agent;
 import com.thegreenwash.api.model.Booking;
+import com.thegreenwash.api.model.Complex;
 import com.thegreenwash.api.repository.AgentRepo;
 import com.thegreenwash.api.repository.ComplexRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,19 @@ public class AgentService {
             return "Agent already exists!";
         }
         else{
-            complexRepo.findByComplexName(agent.getComplexName()).orElseThrow(
-                    ()-> new ComplexNotFoundException("Not Found!"))
-                    .getAgents().add(agent.getAgentId());
-            agentRepo.save(agent);
-            return "Success";
+            try {
+                Complex complex =complexRepo.findByComplexName(agent.getComplexName()).orElseThrow(
+                        () -> new ComplexNotFoundException("Not Found!"));
+
+                complex.getAgents().add(agent.getSurname());
+                complexRepo.save(complex);
+                agentRepo.save(agent);
+                return "Success";
+
+            }catch (Exception ex){
+                ex.printStackTrace();
+                return "Incorrect Entered Complex";
+            }
         }
     }
     public String updateAgent(Agent agent){
