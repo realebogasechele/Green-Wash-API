@@ -39,9 +39,9 @@ public class BookingService {
 
     public String addBooking(Booking booking){
         //Adds a booking to google calendar and booking database
+        OffsetDateTime tempBookingTime = OffsetDateTime.parse(booking.getStartTime());
         booking.setAgentId(agentRepo.findBySurname(assignAgent(booking.getComplexId())).getAgentId());
-        booking.setEndTime(booking.getStartTime().plusMinutes(
-                packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15));
+        booking.setEndTime(tempBookingTime.plusMinutes(packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15).toString());
         bookingRepo.save(booking);
         return "Booking added successfully!";
     }
@@ -58,7 +58,7 @@ public class BookingService {
 
     public List<OffsetTime> getSuggestedTimes(String complexId, String packageId, String date){
         ZonedDateTime date2 = ZonedDateTime.parse(date);
-        List<Booking> bookings = bookingRepo.findAllByComplexIdAndDateAndIsComplete(complexId, date2.toLocalDate(), false);
+        List<Booking> bookings = bookingRepo.findAllByComplexIdAndDateAndIsComplete(complexId, date2.toLocalDate().toString(), false);
         bookings.sort(Comparator.comparing(Booking::getStartTime));
 
         Package pack = packageRepo.findById(packageId)
@@ -81,15 +81,16 @@ public class BookingService {
             ZonedDateTime endTime = ZonedDateTime.parse(complex.getEndTime());
             OffsetTime time = OffsetTime.now(ZoneId.of("Africa/Harare"));
             for (int i = 0; i < bookings.size(); i++) {
-                OffsetTime currentBookingTime = bookings.get(i).getStartTime().toOffsetDateTime().toOffsetTime();
+                OffsetTime currentBookingTime = OffsetDateTime.parse(bookings.get(i).getStartTime()).toOffsetTime();
                 /*Checks if time is the same as the start of the complexes start time or before the complexes start time
                  * and before the time of the next booking*/
                 if (time.equals(startTime) || time.isBefore(startTime.toOffsetDateTime().toOffsetTime())
                         && time.isBefore(currentBookingTime)) {
                     /*Checks if the next booking exists in order to compare the current booking with the next*/
                     if (!Objects.isNull(bookings.get(i + 1))) {
+                        OffsetDateTime incrementedBookingTime = OffsetDateTime.parse(bookings.get(i + 1).getStartTime());
                         OffsetTime tempTime = time.plusMinutes(pack.getMinutes()).plusMinutes(15);
-                        if (time.isBefore(bookings.get(i + 1).getStartTime().toOffsetDateTime().toOffsetTime())) {
+                        if (time.isBefore(incrementedBookingTime.toOffsetTime())) {
                             suggestedTimes.add(time.minusMinutes(pack.getMinutes() + 15));
                         }
                     } else {
@@ -128,10 +129,14 @@ public class BookingService {
     }
 
     public String completeBooking(String bookingId){
-        Booking booking = bookingRepo.findById(bookingId).orElseThrow(()-> new BookingNotFoundException("Not Found!"));
-        booking.setComplete(true);
-        bookingRepo.save(booking);
-        return "Completed booking filed!";
+        try {
+            Booking booking = bookingRepo.findById(bookingId).orElseThrow(() -> new BookingNotFoundException("Not Found!"));
+            booking.setComplete(true);
+            bookingRepo.save(booking);
+            return "Completed booking filed!";
+        }catch (Exception ex){
+            return "Booking Not Found!";
+        }
     }
 
     public List<Booking> getBookings(String date) {

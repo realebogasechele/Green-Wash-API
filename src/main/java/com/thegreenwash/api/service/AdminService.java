@@ -41,10 +41,10 @@ public class AdminService {
         return "Account updated successfully!";
     }
 
-    public String login(String cellNum, String password){
-        adminRepo.findByCellNumAndPassword(cellNum, password)
+    public Admin login(String cellNum, String password){
+        return adminRepo.findByCellNumAndPassword(cellNum, password)
                 .orElseThrow(()-> new AdminNotFoundException("Invalid cellphone number or password!"));
-        return "Success!";
+
     }
 
     //Agent Related

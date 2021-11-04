@@ -42,7 +42,7 @@ public class ClientService {
     //Client related
     public String addClient(Client client){
         try {
-            List<String> units = complexRepo.findById(client.getComplexId()).orElseThrow(
+            List<String> units = complexRepo.findByComplexName(client.getComplexName()).orElseThrow(
                     () -> new ComplexNotFoundException("Not Found!")).getUnits();
             int i = 0;
             boolean found = false;
@@ -81,14 +81,22 @@ public class ClientService {
     public void deleteClient(String clientId){
         //deactivate client
     }
+    public String verifyCellNumber(String cellNum){
+        Client client = clientRepo.findByCellNum(cellNum);
+        if(Objects.isNull(client)) {
+            return "Verified";
+        }else{
+            return "User exists!";
+        }
+    }
 
-    public String login(String cellNum, String password){
+    public Client login(String cellNum, String password){
         try {
-            clientRepo.findByCellNumAndPassword(cellNum, password)
+            return clientRepo.findByCellNumAndPassword(cellNum, password)
                     .orElseThrow(() -> new ClientNotFoundException("Invalid cell number or password"));
-            return "Success!";
         }catch (ClientNotFoundException e){
-            return "Invalid cell number or password";
+            Client emptyClient = new Client();
+            return emptyClient;
         }
     }
 

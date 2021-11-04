@@ -33,10 +33,10 @@ public class ClientController {
     }
 
     @GetMapping("/login/{cellNum}/{password}")
-    public ResponseEntity<String> login(@PathVariable("cellNum") String cellNum,
+    public ResponseEntity<Client> login(@PathVariable("cellNum") String cellNum,
                                         @PathVariable("password") String password){
-        String status = clientService.login(cellNum,password);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        Client client = clientService.login(cellNum,password);
+        return new ResponseEntity<>(client, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/update")
@@ -44,10 +44,17 @@ public class ClientController {
         String status = clientService.updateClient(client);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
+
     @GetMapping("/get/{clientId}")
     public ResponseEntity<Client> getClientDetails(@PathVariable("clientId") String clientId){
         Client client = clientService.getClientDetails(clientId);
         return new ResponseEntity<>(client, HttpStatus.OK);
+    }
+
+    @GetMapping("/verifyCellNum/{cellNum}")
+    public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum){
+        String status = clientService.verifyCellNumber(cellNum);
+        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
     //Otp Related

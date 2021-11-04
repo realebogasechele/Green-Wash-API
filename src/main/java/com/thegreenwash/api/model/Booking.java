@@ -25,11 +25,11 @@ public class Booking {
     @Field
     private String paymentMethod;
     @Field
-    private LocalDate date;
+    private String date;
     @Field
-    private ZonedDateTime startTime;
+    private String startTime;
     @Field
-    private ZonedDateTime endTime;
+    private String endTime;
     @Field
     private ZoneId timeZone;
     @Field
@@ -48,8 +48,8 @@ public class Booking {
 
     public Booking(String clientId, String vehicleId, String agentId,
                    String complexId, String packageId, String price,
-                   String paymentMethod, LocalDate date, ZonedDateTime startTime,
-                   ZonedDateTime endTime, ZoneId timeZone, Boolean isComplete,
+                   String paymentMethod, String date, String startTime,
+                   String endTime, ZoneId timeZone, Boolean isComplete,
                    String reasonForIncomplete, Boolean isIncomplete, Boolean refund,
                    Boolean isRefunded) {
         this.clientId = clientId;
@@ -68,30 +68,6 @@ public class Booking {
         this.isIncomplete = isIncomplete;
         this.refund = refund;
         this.isRefunded = isRefunded;
-    }
-
-    public String getReasonForIncomplete() {
-        return reasonForIncomplete;
-    }
-
-    public void setReasonForIncomplete(String reasonForIncomplete) {
-        this.reasonForIncomplete = reasonForIncomplete;
-    }
-
-    public Boolean getIncomplete() {
-        return isIncomplete;
-    }
-
-    public void setIncomplete(Boolean incomplete) {
-        isIncomplete = incomplete;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
     }
 
     public String getBookingId() {
@@ -150,27 +126,35 @@ public class Booking {
         this.price = price;
     }
 
-    public LocalDate getDate() {
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public ZonedDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(ZonedDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public ZonedDateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(ZonedDateTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -188,6 +172,22 @@ public class Booking {
 
     public void setComplete(Boolean complete) {
         isComplete = complete;
+    }
+
+    public String getReasonForIncomplete() {
+        return reasonForIncomplete;
+    }
+
+    public void setReasonForIncomplete(String reasonForIncomplete) {
+        this.reasonForIncomplete = reasonForIncomplete;
+    }
+
+    public Boolean getIncomplete() {
+        return isIncomplete;
+    }
+
+    public void setIncomplete(Boolean incomplete) {
+        isIncomplete = incomplete;
     }
 
     public Boolean getRefund() {

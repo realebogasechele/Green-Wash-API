@@ -24,8 +24,8 @@ public class AgentController {
     @GetMapping("/login/{cellNum}/{password}")
     public ResponseEntity<String> login(@PathVariable("cellNum") String cellNum,
                                         @PathVariable("password") String password){
-        String status = agentService.login(cellNum, password);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        String agentId = agentService.login(cellNum, password);
+        return new ResponseEntity<>(agentId, HttpStatus.ACCEPTED);
     }
     //Booking Related
     @GetMapping("/booking/all/{agentId}")

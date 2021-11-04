@@ -53,9 +53,12 @@ public class AgentService {
     }
 
     public String login(String cellNum, String password){
-        agentRepo.findByCellNumAndPassword(cellNum, password)
-                .orElseThrow(()-> new AgentNotFoundException("Invalid Cell number or Password"));
-        return "Success!";
+        try {
+            return agentRepo.findByCellNumAndPassword(cellNum, password)
+                    .orElseThrow(() -> new AgentNotFoundException("Invalid Cell number or Password")).getAgentId();
+        }catch (Exception ex){
+            return "Invalid Cell number or Password!";
+        }
     }
 
     public List<Booking> viewBookings(String agentId){

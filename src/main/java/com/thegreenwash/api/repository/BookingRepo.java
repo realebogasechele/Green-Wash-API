@@ -11,7 +11,7 @@ public interface BookingRepo extends MongoRepository<Booking, String> {
     Optional<List<Booking>> findAllByClientId(String clientId);
     Optional<List<Booking>> findAllByAgentId(String agentId);
 
-    List<Booking> findAllByComplexIdAndDateAndIsComplete(String complexId, LocalDate localDate, Boolean isComplete);
+    List<Booking> findAllByComplexIdAndDateAndIsComplete(String complexId, String localDate, Boolean isComplete);
 
     List<Booking> findByDate(LocalDate localDate);
 }

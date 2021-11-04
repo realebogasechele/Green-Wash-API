@@ -8,7 +8,7 @@ public class Client {
     private String clientId;
 
     @Field
-    private String complexId;
+    private String complexName;
     @Field
     private String name;
     @Field
@@ -26,8 +26,8 @@ public class Client {
 
     public Client(){}
 
-    public Client(String complexId, String name, String surname, String unitNum, String cellNum, String password, String deviceId, Integer otp) {
-        this.complexId = complexId;
+    public Client(String complexName, String name, String surname, String unitNum, String cellNum, String password, String deviceId, Integer otp) {
+        this.complexName = complexName;
         this.name = name;
         this.surname = surname;
         this.unitNum = unitNum;
@@ -61,12 +61,12 @@ public class Client {
         this.clientId = clientId;
     }
 
-    public String getComplexId() {
-        return complexId;
+    public String getComplexName() {
+        return complexName;
     }
 
-    public void setComplexId(String complexId) {
-        this.complexId = complexId;
+    public void setComplexName(String complexName) {
+        this.complexName = complexName;
     }
 
     public String getName() {
