@@ -48,9 +48,10 @@ public class ClientService {
             for (String unit: units) {
                 if (unit == client.getUnitNum()) {
                     found = true;
+
                 }
             }
-            if (!found) {
+            if (found == true) {
                 return "Unit does not exist";
             } else {
                 Client temp = clientRepo.findByCellNum(client.getCellNum());
