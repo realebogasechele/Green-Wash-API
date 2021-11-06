@@ -157,40 +157,40 @@ public class AdminService {
     }
 
     //Queries
-    public Map<String, Integer> findAllForPast7Days(){
-        Map<String, Integer> response = new HashMap<>();
+    public List<ResponseObject> findAllForPast7Days(){
+        List<ResponseObject> response = new ArrayList<>();
         OffsetDateTime dateTime = OffsetDateTime.now();
         List<Booking> bookings;
 
         for(long i = 0; i <= 7; i++) {
             bookings = bookingRepo.findAllByDate(dateTime.minusDays(i).toLocalDate().toString());
-            response.put("Day " + i, bookings.size());
+            ResponseObject object = new ResponseObject("Day " + i, bookings.size());
+            response.add(object);
         }
-
         return response;
     }
 
-    public Map<String, Integer> packagePopularity(){
-        Map<String,Integer> response = new HashMap<>();
+    public List<ResponseObject> packagePopularity(){
+        List<ResponseObject> response = new ArrayList<>();
         List<Booking> bookings;
         List<Package> packages = packageRepo.findAll();
 
         for(Package pack: packages) {
             bookings = bookingRepo.findAllByPackageId(pack.getPackageId());
-            response.put(pack.getPackageName(), bookings.size());
+            response.add(new ResponseObject(pack.getPackageName(), bookings.size()));
         }
         return response;
     }
 
-    public Map<String, Integer> clientPopulation(){
+    public List<ResponseObject> clientPopulation(){
         Query query = new Query();
         List<Complex> complexes = complexRepo.findAll();
-        Map<String, Integer> response = new HashMap<>();
+        List<ResponseObject> response = new ArrayList<>();
 
         for (Complex complex: complexes) {
             query.addCriteria(Criteria.where("complexId").is(complex.getComplexId()));
             List<Client> clients = mongoTemplate.find(query, Client.class);
-            response.put(complex.getComplexName(), clients.size());
+            response.add(new ResponseObject(complex.getComplexName(), clients.size()));
         }
 
         return response;
@@ -201,11 +201,13 @@ public class AdminService {
         List<Complex> complexes = complexRepo.findAll();
         List<Client> clients;
         Map<String, Integer> numberOfClients = new HashMap<>();
+
         for(int i = 0; i <= complexes.size(); i++){
             query.addCriteria(Criteria.where("complexId").is(complexes.get(i).getComplexId()));
             clients = mongoTemplate.find(query, Client.class);
             numberOfClients.put(complexes.get(i).getComplexName(), clients.size());
         }
+
         numberOfClients = sortByValue(numberOfClients);
 
         List<String> keys = new ArrayList<>(numberOfClients.keySet());
@@ -229,7 +231,6 @@ public class AdminService {
     }
 
     public String mostPopularPackage(){
-        Query query = new Query();
         List<Package> packages = packageRepo.findAll();
         List<Booking> bookings;
         Map<String, Integer> numberOfPackages = new HashMap<>();
@@ -245,7 +246,6 @@ public class AdminService {
 
     //Utility classes
     private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> unsortedMap) {
-
         List<Map.Entry<K, V>> list =
                 new LinkedList<>(unsortedMap.entrySet());
 

@@ -194,20 +194,20 @@ public class AdminController {
 
     //Queries
     @GetMapping("/query/past7Days")
-    public ResponseEntity<Map<String, Integer>> findBookingsForPast7Days(){
-        Map<String, Integer> response = adminService.findAllForPast7Days();
+    public ResponseEntity<List<ResponseObject>> findBookingsForPast7Days(){
+        List<ResponseObject> response = adminService.findAllForPast7Days();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/query/packagePopularity")
-    public ResponseEntity<Map<String, Integer>> packagePopularityInAComplex(){
-        Map<String, Integer> response = adminService.packagePopularity();
+    public ResponseEntity<List<ResponseObject>> packagePopularityInAComplex(){
+        List<ResponseObject> response = adminService.packagePopularity();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/query/clientPopulation")
-    public ResponseEntity<Map<String, Integer>> clientPopulationInAComplex(){
-        Map<String, Integer> response = adminService.clientPopulation();
+    public ResponseEntity<List<ResponseObject>> clientPopulationInAComplex(){
+        List<ResponseObject> response = adminService.clientPopulation();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
