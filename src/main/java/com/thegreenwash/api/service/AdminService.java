@@ -4,15 +4,25 @@ import com.thegreenwash.api.exception.AdminNotFoundException;
 import com.thegreenwash.api.model.*;
 import com.thegreenwash.api.model.Package;
 import com.thegreenwash.api.repository.AdminRepo;
+import com.thegreenwash.api.repository.BookingRepo;
+import com.thegreenwash.api.repository.ComplexRepo;
+import com.thegreenwash.api.repository.PackageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.time.OffsetDateTime;
+import java.util.*;
 
 @Service
 public class AdminService {
     private final AdminRepo adminRepo;
+    private final MongoTemplate mongoTemplate;
+    private final ComplexRepo complexRepo;
+    private final PackageRepo packageRepo;
+    private final BookingRepo bookingRepo;
     private final AgentService agentService;
     private final BookingService bookingService;
     private final ComplexService complexService;
@@ -20,10 +30,14 @@ public class AdminService {
     private final PromotionService promotionService;
 
     @Autowired
-    public AdminService(AdminRepo adminRepo, AgentService agentService, BookingService bookingService,
+    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentService agentService, BookingService bookingService,
                         ComplexService complexService, PackageService packageService,
                         PromotionService promotionService) {
         this.adminRepo = adminRepo;
+        this.mongoTemplate = mongoTemplate;
+        this.complexRepo = complexRepo;
+        this.packageRepo = packageRepo;
+        this.bookingRepo = bookingRepo;
         this.agentService = agentService;
         this.bookingService = bookingService;
         this.complexService = complexService;
@@ -140,5 +154,112 @@ public class AdminService {
 
     public Map<String, Object> getSortedBookings(int pageNo, int pageSize, String sortBy) {
         return bookingService.getSortedBookings(pageNo, pageSize, sortBy);
+    }
+
+    //Queries
+    public Map<String, Integer> findAllForPast7Days(String currentDate){
+        Map<String, Integer> response = new HashMap<>();
+        OffsetDateTime dateTime = OffsetDateTime.parse(currentDate);
+        List<Booking> bookings;
+
+        for(long i = 0; i <= 7; i++) {
+            bookings = bookingRepo.findAllByDate(dateTime.minusDays(i).toLocalDate().toString());
+            response.put("Day " + i, bookings.size());
+        }
+
+        return response;
+    }
+
+    public Map<String, Integer> packagePopularityInAComplex(String complexId){
+        Map<String,Integer> response = new HashMap<>();
+        Query query = new Query();
+        List<Booking> bookings;
+        List<Package> packages = packageRepo.findAll();
+
+        for(int i = 0; i <= packages.size(); i++) {
+            query.addCriteria(Criteria.where("packageName").is(packages.get(i).getPackageName()).and("complexId").is(complexId));
+            bookings = mongoTemplate.find(query, Booking.class);
+            response.put(packages.get(i).getPackageName(), bookings.size());
+        }
+        return response;
+    }
+
+    public Map<String, Integer> clientPopulation(){
+        Query query = new Query();
+        List<Complex> complexes = complexRepo.findAll();
+        Map<String, Integer> response = new HashMap<>();
+
+        for (Complex complex: complexes) {
+            query.addCriteria(Criteria.where("complexId").is(complex.getComplexId()));
+            List<Client> clients = mongoTemplate.find(query, Client.class);
+            response.put(complex.getComplexName(), clients.size());
+        }
+
+        return response;
+    }
+
+    public String mostPopulatedComplex(){
+        Query query = new Query();
+        List<Complex> complexes = complexRepo.findAll();
+        List<Client> clients;
+        Map<String, Integer> numberOfClients = new HashMap<>();
+        for(int i = 0; i <= complexes.size(); i++){
+            query.addCriteria(Criteria.where("complexId").is(complexes.get(i).getComplexId()));
+            clients = mongoTemplate.find(query, Client.class);
+            numberOfClients.put(complexes.get(i).getComplexName(), clients.size());
+        }
+        numberOfClients = sortByValue(numberOfClients);
+
+        List<String> keys = new ArrayList<>(numberOfClients.keySet());
+
+        return keys.get(0);
+    }
+
+    public String complexWithTheMostBookings(){
+        Query query = new Query();
+        List<Complex> complexes = complexRepo.findAll();
+        List<Booking> bookings;
+        Map<String, Integer> numberOfBookings = new HashMap<>();
+        for(int i = 0; i <= complexes.size(); i++){
+            query.addCriteria(Criteria.where("complexId").is(complexes.get(i).getComplexId()));
+            bookings = mongoTemplate.find(query, Booking.class);
+            numberOfBookings.put(complexes.get(i).getComplexName(), bookings.size());
+        }
+        numberOfBookings = sortByValue(numberOfBookings);
+        List<String> keys = new ArrayList<>(numberOfBookings.keySet());
+        return keys.get(0);
+    }
+
+    public String mostPopularPackage(){
+        Query query = new Query();
+        List<Package> packages = packageRepo.findAll();
+        List<Booking> bookings;
+        Map<String, Integer> numberOfPackages = new HashMap<>();
+        for(int i = 0; i <= packages.size(); i++){
+            query.addCriteria(Criteria.where("packageId").is(packages.get(i).getPackageId()));
+            bookings = mongoTemplate.find(query, Booking.class);
+            numberOfPackages.put(packages.get(i).getPackageName(), bookings.size());
+        }
+
+        numberOfPackages = sortByValue(numberOfPackages);
+        List<String> keys = new ArrayList<>(numberOfPackages.keySet());
+        return keys.get(0);
+    }
+
+    //Utility classes
+    private static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> unsortedMap) {
+
+        List<Map.Entry<K, V>> list =
+                new LinkedList<>(unsortedMap.entrySet());
+
+        list.sort(Map.Entry.comparingByValue());
+
+        Map<K, V> result = new LinkedHashMap<>();
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
+
     }
 }

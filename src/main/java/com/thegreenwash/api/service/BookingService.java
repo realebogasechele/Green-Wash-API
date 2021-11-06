@@ -4,23 +4,21 @@ import com.thegreenwash.api.exception.BookingNotFoundException;
 import com.thegreenwash.api.exception.ComplexNotFoundException;
 import com.thegreenwash.api.exception.PackageNotFoundException;
 import com.thegreenwash.api.model.Booking;
+import com.thegreenwash.api.model.Client;
 import com.thegreenwash.api.model.Complex;
 import com.thegreenwash.api.model.Package;
-import com.thegreenwash.api.repository.AgentRepo;
-import com.thegreenwash.api.repository.BookingRepo;
-import com.thegreenwash.api.repository.ComplexRepo;
-import com.thegreenwash.api.repository.PackageRepo;
+import com.thegreenwash.api.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-import static java.time.OffsetTime.now;
 
 @Service
 public class BookingService {
@@ -30,7 +28,7 @@ public class BookingService {
     private final AgentRepo agentRepo;
 
     @Autowired
-    public BookingService(ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentRepo agentRepo) {
+    public BookingService(ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentRepo agentRepo, ClientRepo clientRepo) {
         this.complexRepo = complexRepo;
         this.packageRepo = packageRepo;
         this.bookingRepo = bookingRepo;
@@ -39,9 +37,18 @@ public class BookingService {
 
     public String addBooking(Booking booking){
         //Adds a booking to google calendar and booking database
-        OffsetDateTime tempBookingTime = OffsetDateTime.parse(booking.getStartTime());
+        OffsetTime tempBookingTime = OffsetTime.parse(booking.getStartTime());
+        OffsetDateTime tempBookingDate = OffsetDateTime.parse(booking.getDate());
+        //Set a random agent from a complex
         booking.setAgentId(agentRepo.findBySurname(assignAgent(booking.getComplexId())).getAgentId());
+
+        //Set the end time of the Booking
         booking.setEndTime(tempBookingTime.plusMinutes(packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15).toString());
+
+        //Ensures that the date is saved with just the date values for report generation
+        booking.setDate(tempBookingDate.toLocalDate().toString());
+
+        //Save Booking
         bookingRepo.save(booking);
         return "Booking added successfully!";
     }
@@ -140,10 +147,11 @@ public class BookingService {
     }
 
     public List<Booking> getBookings(String date) {
-        LocalDate localDate = LocalDate.parse(date);
-        return bookingRepo.findByDate(localDate);
+        OffsetDateTime dateTime = OffsetDateTime.parse(date);
+        return bookingRepo.findAllByDate(dateTime.toLocalDate().toString());
     }
 
+    //Queries
     public Map<String, Object> getSortedBookings(int pageNo, int pageSize, String sortBy) {
         Map<String, Object> response = new HashMap<>();
 
@@ -157,4 +165,8 @@ public class BookingService {
 
         return response;
     }
+
+
+
+
 }

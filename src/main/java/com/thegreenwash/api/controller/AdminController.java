@@ -191,4 +191,43 @@ public class AdminController {
         Promotion promotion = adminService.findByPromotionId(promotionId);
         return new ResponseEntity<>(promotion, HttpStatus.ACCEPTED);
     }
+
+    //Queries
+    @GetMapping("/query/past7Days/{currentDate}")
+    public ResponseEntity<Map<String, Integer>> findBookingsForPast7Days(@PathVariable("currentDate") String currentDate){
+        Map<String, Integer> response = adminService.findAllForPast7Days(currentDate);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/query/packagePopularity/{complexId}")
+    public ResponseEntity<Map<String, Integer>> packagePopularityInAComplex(@PathVariable("complexId") String complexId){
+        Map<String, Integer> response = adminService.packagePopularityInAComplex(complexId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/query/clientPopulation")
+    public ResponseEntity<Map<String, Integer>> clientPopulationInAComplex(){
+        Map<String, Integer> response = adminService.clientPopulation();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/query/complexMostBookings")
+    public ResponseEntity<String> complexWithMostBookings(){
+        String response = adminService.complexWithTheMostBookings();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/query/mostPopularPackage")
+    public ResponseEntity<String> mostPopularPackage(){
+        String response = adminService.mostPopularPackage();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    //This endpoint's information is redundant thanks to clientPopulation
+    @Deprecated
+    @GetMapping("/query/mostPopulatedComplex")
+    public ResponseEntity<String> mostPopulatedComplex(){
+        String response = adminService.mostPopulatedComplex();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
