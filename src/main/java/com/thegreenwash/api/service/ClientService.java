@@ -44,13 +44,10 @@ public class ClientService {
         try {
             List<String> units = complexRepo.findByComplexName(client.getComplexName()).orElseThrow(
                     () -> new ComplexNotFoundException("Not Found!")).getUnits();
-            int i = 0;
             boolean found = false;
-            while (i != units.size() || found == false) {
-                for (i = 0; i < units.size(); i++) {
-                    if (units.get(i) == client.getUnitNum()) {
-                        found = true;
-                    }
+            for (String unit: units) {
+                if (unit == client.getUnitNum()) {
+                    found = true;
                 }
             }
             if (!found) {
