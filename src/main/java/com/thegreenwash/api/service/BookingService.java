@@ -63,28 +63,25 @@ public class BookingService {
                 .get(random.nextInt(complex.getAgents().size())));
     }
 
-    public List<OffsetTime> getSuggestedTimes(String complexId, String packageId, String date){
+    public List<String> getSuggestedTimes(String complexName, String packageId, String date){
         ZonedDateTime date2 = ZonedDateTime.parse(date);
-        List<Booking> bookings = bookingRepo.findAllByComplexIdAndDateAndIsComplete(complexId, date2.toLocalDate().toString(), false);
+        Complex complex = complexRepo.findByComplexName(complexName).orElseThrow(()-> new ComplexNotFoundException("Not Found"));
+        List<Booking> bookings = bookingRepo.findAllByComplexIdAndDateAndIsComplete(complex.getComplexId(), date2.toLocalDate().toString(), false);
         bookings.sort(Comparator.comparing(Booking::getStartTime));
 
         Package pack = packageRepo.findById(packageId)
                 .orElseThrow(()-> new PackageNotFoundException("Not Found!"));
-        Complex complex = complexRepo.findById(complexId)
-                .orElseThrow(()-> new ComplexNotFoundException("There is no complex with the id: "+ complexId));
+        List<String> suggestedTimes = new ArrayList<>();
 
-        List<OffsetTime> suggestedTimes = new ArrayList<>();
-
+        ZonedDateTime startTime = ZonedDateTime.parse(complex.getStartTime());
         if(Objects.isNull(bookings)){
-            ZonedDateTime startTime = ZonedDateTime.parse(complex.getStartTime());
-            suggestedTimes.add(startTime.toOffsetDateTime().toOffsetTime());
-            suggestedTimes.add(startTime.plusMinutes(30).toOffsetDateTime().toOffsetTime());
-            suggestedTimes.add(startTime.plusMinutes(60).toOffsetDateTime().toOffsetTime());
-            suggestedTimes.add(startTime.plusMinutes(90).toOffsetDateTime().toOffsetTime());
+            suggestedTimes.add(startTime.toOffsetDateTime().toOffsetTime().toString());
+            suggestedTimes.add(startTime.plusMinutes(30).toOffsetDateTime().toOffsetTime().toString());
+            suggestedTimes.add(startTime.plusMinutes(60).toOffsetDateTime().toOffsetTime().toString());
+            suggestedTimes.add(startTime.plusMinutes(90).toOffsetDateTime().toOffsetTime().toString());
             return suggestedTimes;
         }
         else {
-            ZonedDateTime startTime = ZonedDateTime.parse(complex.getStartTime());
             ZonedDateTime endTime = ZonedDateTime.parse(complex.getEndTime());
             OffsetTime time = OffsetTime.now(ZoneId.of("Africa/Harare"));
             for (int i = 0; i < bookings.size(); i++) {
@@ -98,13 +95,13 @@ public class BookingService {
                         OffsetDateTime incrementedBookingTime = OffsetDateTime.parse(bookings.get(i + 1).getStartTime());
                         OffsetTime tempTime = time.plusMinutes(pack.getMinutes()).plusMinutes(15);
                         if (time.isBefore(incrementedBookingTime.toOffsetTime())) {
-                            suggestedTimes.add(time.minusMinutes(pack.getMinutes() + 15));
+                            suggestedTimes.add(time.minusMinutes(pack.getMinutes() + 15).toString());
                         }
                     } else {
                         /*Checks if a booking can be made before the end of working time*/
                         time = time.plusMinutes(pack.getMinutes()).plusMinutes(15);
                         if (time.isBefore(endTime.toOffsetDateTime().toOffsetTime())) {
-                            suggestedTimes.add(time.minusMinutes(pack.getMinutes() + 15));
+                            suggestedTimes.add(time.minusMinutes(pack.getMinutes() + 15).toString());
                         }
                     }
                 }

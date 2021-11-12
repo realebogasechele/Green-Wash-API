@@ -107,8 +107,8 @@ public class ClientService {
         return bookingService.addBooking(booking);
     }
 
-    public List<OffsetTime> getSuggestedTimes(String complexId, String packageId, String date){
-        return bookingService.getSuggestedTimes(complexId, packageId, date);
+    public List<String> getSuggestedTimes(String complexName, String packageId, String date){
+        return bookingService.getSuggestedTimes(complexName, packageId, date);
     }
 
     public Agent getAgentDetails(String bookingId){

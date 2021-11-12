@@ -89,11 +89,11 @@ public class ClientController {
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("booking/getSuggestedTimes/{complexId}/{packageId}/{date}")
-    public ResponseEntity<List<OffsetTime>> getSuggestedTimes(@PathVariable("complexId") String complexId,
+    @GetMapping("booking/getSuggestedTimes/{complexName}/{packageId}/{date}")
+    public ResponseEntity<List<String>> getSuggestedTimes(@PathVariable("complexName") String complexName,
                                                               @PathVariable("packageId") String packageId,
                                                               @PathVariable("date") String date){
-        List<OffsetTime> times = clientService.getSuggestedTimes(complexId,packageId,date);
+        List<String> times = clientService.getSuggestedTimes(complexName,packageId,date);
         return new ResponseEntity<>(times, HttpStatus.ACCEPTED);
     }
 
