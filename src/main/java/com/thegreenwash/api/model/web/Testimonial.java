@@ -18,6 +18,8 @@ public class Testimonial {
     @Field
     private Integer rating;
     @Field
+    private String cellNum;
+    @Field
     private String title;
     @Field
     private String description;
@@ -25,11 +27,13 @@ public class Testimonial {
     public Testimonial() {
     }
 
-    public Testimonial(String name, String surname, String socialHandle, Integer rating, String title, String description) {
+    public Testimonial(String name, String surname, String socialHandle,
+                       Integer rating, String cellNum, String title, String description) {
         this.name = name;
         this.surname = surname;
         this.socialHandle = socialHandle;
         this.rating = rating;
+        this.cellNum = cellNum;
         this.title = title;
         this.description = description;
     }
@@ -88,5 +92,13 @@ public class Testimonial {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCellNum() {
+        return cellNum;
+    }
+
+    public void setCellNum(String cellNum) {
+        this.cellNum = cellNum;
     }
 }

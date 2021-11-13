@@ -25,6 +25,7 @@ public class GreenWashApplication {
 				registry.addMapping("/client").allowedOrigins("*");
 				registry.addMapping("/admin").allowedOrigins("*");
 				registry.addMapping("/admin").allowedOrigins("*");
+				registry.addMapping("/web").allowedOrigins("*");
 			}
 		};
 	}

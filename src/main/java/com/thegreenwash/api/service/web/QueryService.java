@@ -13,10 +13,11 @@ import java.util.List;
 
 @Service
 public class QueryService {
-    @Autowired
+
     private final QueryRepo queryRepo;
     private final JavaMailSender javaMailSender;
 
+    @Autowired
     public QueryService(QueryRepo queryRepo, JavaMailSender javaMailSender) {
         this.queryRepo = queryRepo;
         this.javaMailSender = javaMailSender;
