@@ -52,20 +52,34 @@ public class AdminController {
     @PostMapping("/forgot/verify/{cellNum}")
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum) {
         String response = adminService.verifyCellNum(cellNum);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        if(response == "Otp Sent!") {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/forgot/verifyOtp/{otpNumber}/{time}")
     public ResponseEntity<String> verifyOtp(@PathVariable("otpNumber") Integer otpNumber,
                                             @PathVariable("time") String time) {
         String response = adminService.verifyOtp(otpNumber, time);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        if(response == "OTP ran out of time"){
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        }else if(response == "OTP is invalid"){
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/forgot/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody Admin admin){
         String response = adminService.changePassword(admin);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        if(response == "Password Changed.") {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(response,HttpStatus.CONFLICT);
+        }
     }
 
     //Booking Related
