@@ -33,7 +33,7 @@ public class QueryService {
                 return "Query Added!";
             }else{
                 return "Your Query is still being processed. You cannot submit a new one until " +
-                        "your current one is processed";
+                        "your current one is processed.";
             }
         }catch(Exception ex){
             return "Query Not Added!";
@@ -48,7 +48,7 @@ public class QueryService {
             return "Query Replied to successfully!";
         }
         catch(Exception ex){
-            return "Error: could not process request";
+            return "Could not process request";
         }
     }
 
