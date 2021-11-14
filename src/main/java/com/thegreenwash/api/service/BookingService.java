@@ -37,20 +37,43 @@ public class BookingService {
 
     public String addBooking(Booking booking){
         //Adds a booking to google calendar and booking database
-        OffsetTime tempBookingTime = OffsetTime.parse(booking.getStartTime());
-        OffsetDateTime tempBookingDate = OffsetDateTime.parse(booking.getDate());
-        //Set a random agent from a complex
-        booking.setAgentId(agentRepo.findBySurname(assignAgent(booking.getComplexId())).getAgentId());
+        if(bookingRepo.findAllByDate(booking.getDate()).isEmpty()) {
+            OffsetTime tempBookingTime = OffsetTime.parse(booking.getStartTime());
+            OffsetDateTime tempBookingDate = OffsetDateTime.parse(booking.getDate());
+            //Set a random agent from a complex
+            booking.setAgentId(agentRepo.findBySurname(assignAgent(booking.getComplexId())).getAgentId());
 
-        //Set the end time of the Booking
-        booking.setEndTime(tempBookingTime.plusMinutes(packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15).toString());
+            //Set the end time of the Booking
+            booking.setEndTime(tempBookingTime.plusMinutes(packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15).toString());
 
-        //Ensures that the date is saved with just the date values for report generation
-        booking.setDate(tempBookingDate.toLocalDate().toString());
+            //Ensures that the date is saved with just the date values for report generation
+            booking.setDate(tempBookingDate.toLocalDate().toString());
 
-        //Save Booking
-        bookingRepo.save(booking);
-        return "Booking added successfully!";
+            //Save Booking
+            bookingRepo.save(booking);
+            return "Booking added successfully!";
+        }else{
+            List<Booking> bookingsToday = bookingRepo.findAllByDate(booking.getDate());
+            boolean bookingTimeFound = false;
+            for (Booking book: bookingsToday) {
+                OffsetDateTime startTime = OffsetDateTime.parse(booking.getStartTime());
+                if(startTime.isBefore(OffsetDateTime.parse(book.getStartTime()))){
+                    if(startTime.plusMinutes(packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15).isBefore(OffsetDateTime.parse(book.getStartTime()))){
+                        bookingTimeFound = true;
+                        booking.setEndTime(startTime.plusMinutes(packageRepo.findByPackageId(booking.getPackageId()).getMinutes()).plusMinutes(15).toString());
+                        break;
+                    }
+                }
+            }
+            if(bookingTimeFound == true){
+                booking.setAgentId(agentRepo.findBySurname(assignAgent(booking.getComplexId())).getAgentId());
+                bookingRepo.save(booking);
+                return "Booking added successfully!";
+            }
+            else{
+                return "Time is unavailable";
+            }
+        }
     }
 
     public String assignAgent(String complexId){

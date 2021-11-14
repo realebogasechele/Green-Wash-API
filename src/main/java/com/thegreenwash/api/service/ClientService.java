@@ -126,7 +126,7 @@ public class ClientService {
         return "OTP successfully sent";
     }
 
-    public String verifyOtp(Integer otpNumber, ZonedDateTime time){
+    public String verifyOtp(Integer otpNumber, String time){
         return otpService.verifyOtp(otpNumber, time);
     }
 

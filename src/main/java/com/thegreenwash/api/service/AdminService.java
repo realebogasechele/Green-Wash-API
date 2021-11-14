@@ -25,13 +25,14 @@ public class AdminService {
     private final BookingRepo bookingRepo;
     private final AgentService agentService;
     private final BookingService bookingService;
+    private final OtpService otpService;
     private final ComplexService complexService;
     private final PackageService packageService;
     private final PromotionService promotionService;
 
     @Autowired
     public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentService agentService, BookingService bookingService,
-                        ComplexService complexService, PackageService packageService,
+                        OtpService otpService, ComplexService complexService, PackageService packageService,
                         PromotionService promotionService) {
         this.adminRepo = adminRepo;
         this.mongoTemplate = mongoTemplate;
@@ -40,6 +41,7 @@ public class AdminService {
         this.bookingRepo = bookingRepo;
         this.agentService = agentService;
         this.bookingService = bookingService;
+        this.otpService = otpService;
         this.complexService = complexService;
         this.packageService = packageService;
         this.promotionService = promotionService;
@@ -59,6 +61,36 @@ public class AdminService {
         return adminRepo.findByCellNumAndPassword(cellNum, password)
                 .orElseThrow(()-> new AdminNotFoundException("Invalid cellphone number or password!"));
 
+    }
+
+    //Forgotten Password Related
+    public String verifyCellNum(String cellNum){
+       Admin admin = adminRepo.findByCellNum(cellNum);
+       if(!Objects.isNull(admin)){
+           sendOtp(cellNum);
+           return "Otp Sent!";
+       }else{
+           return "Admin does not exist.";
+       }
+    }
+
+    private void sendOtp(String cellNum) {
+        otpService.sendAdminOtp(cellNum);
+    }
+
+    public String verifyOtp(Integer otpNumber, String time){
+        return otpService.verifyOtp(otpNumber, time);
+    }
+
+    public String changePassword(Admin admin){
+        try {
+            Admin existingAdmin = adminRepo.findById(admin.getAdminId()).orElseThrow(() -> new AdminNotFoundException("Not Found!"));
+            existingAdmin.setPassword(admin.getPassword());
+            adminRepo.save(existingAdmin);
+            return "Password Changed.";
+        }catch (Exception ex){
+            return "Admin does not exist.";
+        }
     }
 
     //Agent Related

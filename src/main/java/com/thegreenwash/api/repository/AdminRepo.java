@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface AdminRepo extends MongoRepository<Admin, String> {
     Optional<Admin> findByCellNumAndPassword(String cellNum, String password);
+
+    Admin findByCellNum(String cellNum);
 }
