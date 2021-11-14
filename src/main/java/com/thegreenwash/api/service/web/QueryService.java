@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class QueryService {
@@ -25,11 +26,17 @@ public class QueryService {
 
     public String addQuery(Query query){
         try {
-            query.setNewQuery(true);
-            queryRepo.save(query);
-            return "Query Added!";
+            Query temp = queryRepo.findByCellNoAndNewQuery(query.getCellNo(), true);
+            if(Objects.isNull(temp)) {
+                query.setNewQuery(true);
+                queryRepo.save(query);
+                return "Query Added!";
+            }else{
+                return "Your Query is still being processed. You cannot submit a new one until " +
+                        "your current one is processed";
+            }
         }catch(Exception ex){
-            return "Error: Query Not Added!";
+            return "Query Not Added!";
         }
     }
     public String answerQuery(Query query){

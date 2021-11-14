@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface QueryRepo extends MongoRepository<Query, String> {
     List<Query> findAllByNewQuery(boolean newQuery);
+
+    Query findByCellNoAndNewQuery(String cellNo, boolean newQuery);
 }
