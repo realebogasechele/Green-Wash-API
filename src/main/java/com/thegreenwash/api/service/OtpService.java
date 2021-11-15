@@ -10,6 +10,7 @@ import com.twilio.type.PhoneNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -21,7 +22,7 @@ public class OtpService {
 
     private final String ACCOUNT_SID = "AC13562ebbac0c1a44800c8645c349409d";
     private final String AUTH_TOKEN = "fcfceba609120d8413e2d2a48dc33d17";
-    private final String FROM_NUMBER = "+18647148206";
+    private final String MESSAGING_SERVICE_SID = "MG01d283bf617db49370825c099117df4f";
 
     @Autowired
     public OtpService(OtpRepo otpRepo, AdminRepo adminRepo) {
@@ -37,7 +38,7 @@ public class OtpService {
     public void send(String cellNum) {
         try {
             Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-            ZonedDateTime currentDate = ZonedDateTime.now(ZoneId.of("Africa/Harare"));
+            OffsetDateTime currentDate = OffsetDateTime.now(ZoneId.of("Africa/Harare"));
             int min = 100000;
             int max = 999999;
             int otpNumber = (int) (Math.random() * (max - min + 1) + min);
@@ -45,12 +46,14 @@ public class OtpService {
             Otp otp = new Otp();
             otp.setClientId(cellNum);
             otp.setOtpNumber(otpNumber);
-            otp.setStartTime(currentDate);
-            otp.setEndTime(currentDate.plusMinutes(5));
+            otp.setStartTime(currentDate.toString());
+            otp.setEndTime(currentDate.plusMinutes(5).toString());
             otpRepo.save(otp);
 
+            cellNum = cellNum.substring(0, 1).replace("0", "+27") + cellNum.substring(1);
+
             String msg = "Your Green Wash verification code is: " + otpNumber;
-            Message.creator(new PhoneNumber(cellNum), new PhoneNumber(FROM_NUMBER), msg)
+            Message.creator(new PhoneNumber(cellNum), MESSAGING_SERVICE_SID, msg)
                     .create();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -58,10 +61,10 @@ public class OtpService {
     }
 
     public String verifyOtp(Integer otpNumber, String time) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.parse(time);
+        OffsetDateTime offset = OffsetDateTime.parse(time);
         Otp otp = otpRepo.findByOtpNumber(otpNumber);
         if (!Objects.isNull(otp)) {
-            if (otp.getEndTime().isBefore(zonedDateTime)) {
+            if (offset.isBefore(OffsetDateTime.parse(otp.getEndTime()))) {
                 otpRepo.delete(otp);
                 return otp.getClientId();
             } else {
@@ -76,7 +79,7 @@ public class OtpService {
     public void sendAdminOtp(String cellNum) {
         try {
             Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-            ZonedDateTime currentDate = ZonedDateTime.now(ZoneId.of("Africa/Harare"));
+            OffsetDateTime currentDate = OffsetDateTime.now(ZoneId.of("Africa/Harare"));
             int min = 100000;
             int max = 999999;
             int otpNumber = (int) (Math.random() * (max - min + 1) + min);
@@ -84,12 +87,14 @@ public class OtpService {
             Otp otp = new Otp();
             otp.setClientId(adminRepo.findByCellNum(cellNum).getAdminId());
             otp.setOtpNumber(otpNumber);
-            otp.setStartTime(currentDate);
-            otp.setEndTime(currentDate.plusMinutes(5));
+            otp.setStartTime(currentDate.toString());
+            otp.setEndTime(currentDate.plusMinutes(5).toString());
             otpRepo.save(otp);
 
+            cellNum = cellNum.substring(0, 1).replace("0", "+27") + cellNum.substring(1);
+
             String msg = "Your Green Wash verification code is: " + otpNumber;
-            Message.creator(new PhoneNumber(cellNum), new PhoneNumber(FROM_NUMBER), msg)
+            Message.creator(new PhoneNumber(cellNum), MESSAGING_SERVICE_SID, msg)
                     .create();
         } catch (Exception ex) {
             ex.printStackTrace();

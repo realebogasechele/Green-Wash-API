@@ -7,12 +7,12 @@ public class Otp {
 
     private String clientId;
     private Integer otpNumber;
-    private ZonedDateTime startTime;
-    private ZonedDateTime endTime;
+    private String startTime;
+    private String endTime;
 
     public Otp(){}
 
-    public Otp(String clientId, Integer otpNumber, ZonedDateTime startTime, ZonedDateTime endTime) {
+    public Otp(String clientId, Integer otpNumber, String startTime, String endTime) {
         this.clientId = clientId;
         this.otpNumber = otpNumber;
         this.startTime = startTime;
@@ -23,19 +23,19 @@ public class Otp {
         return id;
     }
 
-    public ZonedDateTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(ZonedDateTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public ZonedDateTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(ZonedDateTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

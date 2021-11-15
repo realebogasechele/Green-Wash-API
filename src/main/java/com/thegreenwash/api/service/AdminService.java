@@ -48,19 +48,26 @@ public class AdminService {
     }
 
     public String addAdmin(Admin admin){
-        adminRepo.save(admin);
-        return "Account created successfully!";
+        if(Objects.isNull(adminRepo.findByCellNum(admin.getCellNum()))){
+            adminRepo.save(admin);
+            return "Account created successfully!";
+        }else{
+            return "Admin already exists!";
+        }
     }
 
     public String updateAdmin(Admin admin){
-        adminRepo.save(admin);
-        return "Account updated successfully!";
+        if(!Objects.isNull(adminRepo.findById(admin.getAdminId()))) {
+            adminRepo.save(admin);
+            return "Account updated successfully!";
+        }else{
+            return "Admin does not exist!";
+        }
     }
 
     public Admin login(String cellNum, String password){
         return adminRepo.findByCellNumAndPassword(cellNum, password)
                 .orElseThrow(()-> new AdminNotFoundException("Invalid cellphone number or password!"));
-
     }
 
     //Forgotten Password Related

@@ -52,11 +52,7 @@ public class AdminController {
     @PostMapping("/forgot/verify/{cellNum}")
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum) {
         String response = adminService.verifyCellNum(cellNum);
-        if(response == "Otp Sent!") {
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
     }
 
     @PostMapping("/forgot/verifyOtp/{otpNumber}/{time}")
