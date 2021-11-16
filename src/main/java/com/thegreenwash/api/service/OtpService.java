@@ -99,7 +99,7 @@ public class OtpService {
         OffsetDateTime offset = OffsetDateTime.parse(time);
         Otp otp = otpRepo.findByOtpNumber(otpNumber);
         if(otp.getClientId() == id) {
-            if (!Objects.isNull(otp)) {
+            if (Objects.isNull(otp) == false) {
                 if (offset.isBefore(OffsetDateTime.parse(otp.getEndTime()))) {
                     otpRepo.delete(otp);
                     return otp.getClientId();
