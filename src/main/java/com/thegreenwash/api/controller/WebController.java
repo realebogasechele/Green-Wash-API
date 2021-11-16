@@ -25,6 +25,13 @@ public class WebController {
         this.queryService = queryService;
         this.testimonialService = testimonialService;
     }
+    @PostMapping("/sendMail/{to}/{subject}/{message}")
+    public ResponseEntity<String> sendEmail(@PathVariable("to") String to,
+                                            @PathVariable("subject") String subject,
+                                            @PathVariable("message") String message){
+        queryService.sendEmail(to, subject, message);
+        return new ResponseEntity<>("sent", HttpStatus.OK);
+    }
 
     //Query Related
     @PostMapping("/query/add")

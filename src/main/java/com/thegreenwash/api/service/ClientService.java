@@ -79,12 +79,22 @@ public class ClientService {
     public void deleteClient(String clientId){
         //deactivate client
     }
+
     public String verifyCellNumber(String cellNum){
         Client client = clientRepo.findByCellNum(cellNum);
         if(Objects.isNull(client)) {
-            return "Verified";
+            return client.getClientId();
         }else{
-            return "User exists!";
+            return "Client does not exist!";
+        }
+    }
+
+    public String verifyEmail(String email) {
+        Client client = clientRepo.findByEmail(email);
+        if(!Objects.isNull(client)){
+            return client.getClientId();
+        }else{
+            return "Client does not exist!";
         }
     }
 
@@ -95,6 +105,18 @@ public class ClientService {
         }catch (ClientNotFoundException e){
             Client emptyClient = new Client();
             return emptyClient;
+        }
+    }
+
+    //Forgotten Password
+    public String changePassword(Client client){
+        try {
+            Client existingClient = clientRepo.findById(client.getClientId()).orElseThrow(() -> new ClientNotFoundException("Not Found."));
+            existingClient.setPassword(client.getPassword());
+            clientRepo.save(existingClient);
+            return "Password Changed.";
+        }catch (Exception ex){
+            return "There was an error";
         }
     }
 
@@ -116,22 +138,39 @@ public class ClientService {
     }
     
     //Otp Related
-    public String sendOtp(String cellNum){
+    public String sendCellOtp(String cellNum){
         try{
-            otpService.send(cellNum);
+            otpService.sendClientCellOtp(cellNum);
+            return "OTP sent.";
         }
         catch (Exception e) {
             e.printStackTrace();
+            return "OTP not sent";
         }
-        return "OTP successfully sent";
+
+    }
+
+    public String sendEmailOtp(String email){
+        try{
+            otpService.sendClientEmailOtp(email);
+            return "OTP Sent.";
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return "OTP not sent.";
+        }
+
     }
 
     public String verifyOtp(Integer otpNumber, String time){
         return otpService.verifyOtp(otpNumber, time);
     }
 
-    public void resendOtp(String cellNum){
-        otpService.resendOtp(cellNum);
+    public void resendCellOtp(String cellNum){
+        otpService.resendClientCellOtp(cellNum);
+    }
+
+    public void resendEmailOtp(String email){
+        otpService.resendClientEmailOtp(email);
     }
 
     //Vehicle Related
@@ -159,4 +198,6 @@ public class ClientService {
     public Client getClientDetails(String clientId) {
         return clientRepo.findById(clientId).orElseThrow(()-> new ClientNotFoundException("Does not exist!"));
     }
+
+
 }

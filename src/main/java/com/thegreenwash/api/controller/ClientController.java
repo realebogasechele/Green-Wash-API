@@ -51,17 +51,36 @@ public class ClientController {
         return new ResponseEntity<>(client, HttpStatus.OK);
     }
 
-    @GetMapping("/verifyCellNum/{cellNum}")
+    @GetMapping("/verify/cell/{cellNum}")
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum){
         String status = clientService.verifyCellNumber(cellNum);
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
+    @GetMapping("/verify/email/{email}")
+    public ResponseEntity<String> verifyEmail (@PathVariable("email") String email){
+        String status = clientService.verifyEmail(email);
+        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+    }
+
+    //Forgotten Password
+    @PostMapping("forgot/changePassword")
+    public ResponseEntity<String> changePassword(@RequestBody Client client){
+        String status = clientService.changePassword(client);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
     //Otp Related
     @PostMapping("/sendOtp/{cellNum}")
-    public ResponseEntity<String> sendOtp (@PathVariable("cellNum") String cellNum){
-       String status = clientService.sendOtp(cellNum);
+    public ResponseEntity<String> sendCellOtp (@PathVariable("cellNum") String cellNum){
+       String status = clientService.sendCellOtp(cellNum);
        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/sendOtp/email/{email}")
+    public ResponseEntity<String> sendEmailOtp (@PathVariable("email") String email){
+        String status = clientService.sendEmailOtp(email);
+        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/verifyOtp/{otpNumber}/{time}")
@@ -71,9 +90,14 @@ public class ClientController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/resendOtp/{cellNum}")
-    public void resendOtp(@PathVariable("cellNum") String cellNum){
-        clientService.resendOtp(cellNum);
+    @PostMapping("/resendOtp/cell/{cellNum}")
+    public void resendCellOtp(@PathVariable("cellNum") String cellNum){
+        clientService.resendCellOtp(cellNum);
+    }
+
+    @PostMapping("/resendOtp/email/{email}")
+    public void resendEmailOtp(@PathVariable("email") String email){
+        clientService.resendEmailOtp(email);
     }
 
     //Booking Related

@@ -64,7 +64,7 @@ public class QueryService {
 
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("admin@thegreenwash.co.za");
+        message.setFrom("teamrapsza@gmail.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);

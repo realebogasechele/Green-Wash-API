@@ -18,6 +18,8 @@ public class Client {
     @Field
     private String cellNum;
     @Field
+    private String email;
+    @Field
     private String password;
     @Field
     private String deviceId;
@@ -26,12 +28,15 @@ public class Client {
 
     public Client(){}
 
-    public Client(String complexName, String name, String surname, String unitNum, String cellNum, String password, String deviceId, Integer otp) {
+    public Client(String complexName, String name, String surname,
+                  String unitNum, String cellNum, String email,
+                  String password, String deviceId, Integer otp) {
         this.complexName = complexName;
         this.name = name;
         this.surname = surname;
         this.unitNum = unitNum;
         this.cellNum = cellNum;
+        this.email = email;
         this.password = password;
         this.deviceId = deviceId;
         this.otp = otp;
@@ -107,5 +112,13 @@ public class Client {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
