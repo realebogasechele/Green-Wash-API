@@ -16,14 +16,17 @@ public class Admin {
     @Field
     private String cellNum;
     @Field
+    private String email;
+    @Field
     private String password;
 
     public Admin(){}
 
-    public Admin(String name, String surname, String cellNum, String password) {
+    public Admin(String name, String surname, String cellNum, String email, String password) {
         this.name = name;
         this.surname = surname;
         this.cellNum = cellNum;
+        this.email = email;
         this.password = password;
     }
 
@@ -65,5 +68,13 @@ public class Admin {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
