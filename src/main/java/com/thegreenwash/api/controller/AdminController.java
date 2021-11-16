@@ -49,23 +49,40 @@ public class AdminController {
     }
 
     //Forgotten Password Related
-    @PostMapping("/forgot/verify/{cellNum}")
+    @PostMapping("/forgot/verify/cell/{cellNum}")
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum) {
         String response = adminService.verifyCellNum(cellNum);
             return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/forgot/verifyOtp/{otpNumber}/{time}")
+    @PostMapping("/forgot/verify/email/{email}")
+    public ResponseEntity<String> verifyEmail(@PathVariable("cellNum") String email) {
+        String response = adminService.verifyEmail(email);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/forgot/verifyOtp/{otpNumber}/{time}/{id}")
     public ResponseEntity<String> verifyOtp(@PathVariable("otpNumber") Integer otpNumber,
-                                            @PathVariable("time") String time) {
-        String response = adminService.verifyOtp(otpNumber, time);
+                                            @PathVariable("time") String time,
+                                            @PathVariable("id") String id) {
+        String response = adminService.verifyOtp(otpNumber, time, id);
         if(response == "OTP ran out of time"){
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-        }else if(response == "OTP is invalid"){
+        }else if(response == "Invalid OTP"){
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }else {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
+    }
+
+    @PostMapping("/forgot/resendOtp/cell/{cellNum}")
+    public void resendCellOtp(@PathVariable("cellNum") String cellNum){
+        adminService.resendCellOtp(cellNum);
+    }
+
+    @PostMapping("/forgot/resendOtp/email/{email}")
+    public void resendEmailOtp(@PathVariable("email") String email){
+        adminService.resendEmailOtp(email);
     }
 
     @PostMapping("/forgot/changePassword")

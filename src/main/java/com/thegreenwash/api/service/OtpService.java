@@ -34,12 +34,19 @@ public class OtpService {
     }
 
     public void resendClientCellOtp(String cellNum) {
-        otpRepo.delete(otpRepo.findByClientId(cellNum).orElseThrow(() -> new OtpNotFoundException("Otp does not exist!")));
-        sendClientCellOtp(cellNum);
+        Otp otp = otpRepo.findByClientId(cellNum);
+        if(!Objects.isNull(otp)) {
+            otpRepo.delete(otpRepo.findByClientId(cellNum));
+            sendClientCellOtp(cellNum);
+        }
     }
+
     public void resendClientEmailOtp(String email) {
-        otpRepo.delete(otpRepo.findByClientId(email).orElseThrow(() -> new OtpNotFoundException("Otp does not exist!")));
-        sendClientEmailOtp(email);
+        Otp otp = otpRepo.findByClientId(email);
+        if(!Objects.isNull(otp)) {
+            otpRepo.delete(otp);
+            sendClientEmailOtp(email);
+        }
     }
 
     public void sendClientCellOtp(String cellNum) {
@@ -52,47 +59,6 @@ public class OtpService {
 
             Otp otp = new Otp();
             otp.setClientId(cellNum);
-            otp.setOtpNumber(otpNumber);
-            otp.setStartTime(currentDate.toString());
-            otp.setEndTime(currentDate.plusMinutes(5).toString());
-            otpRepo.save(otp);
-
-            cellNum = cellNum.substring(0, 1).replace("0", "+27") + cellNum.substring(1);
-
-            String msg = "Your Green Wash verification code is: " + otpNumber;
-            Message.creator(new PhoneNumber(cellNum), MESSAGING_SERVICE_SID, msg)
-                    .create();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public String verifyOtp(Integer otpNumber, String time) {
-        OffsetDateTime offset = OffsetDateTime.parse(time);
-        Otp otp = otpRepo.findByOtpNumber(otpNumber);
-        if (!Objects.isNull(otp)) {
-            if (offset.isBefore(OffsetDateTime.parse(otp.getEndTime()))) {
-                otpRepo.delete(otp);
-                return otp.getClientId();
-            } else {
-                otpRepo.delete(otp);
-                return "OTP ran out of time";
-            }
-        } else {
-            return "OTP is invalid";
-        }
-    }
-
-    public void sendAdminOtp(String cellNum) {
-        try {
-            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-            OffsetDateTime currentDate = OffsetDateTime.now(ZoneId.of("Africa/Harare"));
-            int min = 100000;
-            int max = 999999;
-            int otpNumber = (int) (Math.random() * (max - min + 1) + min);
-
-            Otp otp = new Otp();
-            otp.setClientId(adminRepo.findByCellNum(cellNum).getAdminId());
             otp.setOtpNumber(otpNumber);
             otp.setStartTime(currentDate.toString());
             otp.setEndTime(currentDate.plusMinutes(5).toString());
@@ -129,6 +95,89 @@ public class OtpService {
             ex.printStackTrace();
         }
     }
+    public String verifyOtp(Integer otpNumber, String time, String id) {
+        OffsetDateTime offset = OffsetDateTime.parse(time);
+        Otp otp = otpRepo.findByOtpNumber(otpNumber);
+        if(otp.getClientId() == id) {
+            if (!Objects.isNull(otp)) {
+                if (offset.isBefore(OffsetDateTime.parse(otp.getEndTime()))) {
+                    otpRepo.delete(otp);
+                    return otp.getClientId();
+                } else {
+                    otpRepo.delete(otp);
+                    return "OTP ran out of time";
+                }
+            } else {
+                return "Invalid OTP";
+            }
+        }else{
+            return "Invalid OTP";
+        }
+    }
+
+    public void sendAdminCellOtp(String cellNum) {
+        try {
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            OffsetDateTime currentDate = OffsetDateTime.now(ZoneId.of("Africa/Harare"));
+            int min = 100000;
+            int max = 999999;
+            int otpNumber = (int) (Math.random() * (max - min + 1) + min);
+
+            Otp otp = new Otp();
+            otp.setClientId(adminRepo.findByCellNum(cellNum).getAdminId());
+            otp.setOtpNumber(otpNumber);
+            otp.setStartTime(currentDate.toString());
+            otp.setEndTime(currentDate.plusMinutes(5).toString());
+            otpRepo.save(otp);
+
+            cellNum = cellNum.substring(0, 1).replace("0", "+27") + cellNum.substring(1);
+
+            String msg = "Your Green Wash verification code is: " + otpNumber;
+            Message.creator(new PhoneNumber(cellNum), MESSAGING_SERVICE_SID, msg)
+                    .create();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void sendAdminEmailOtp(String email) {
+        OffsetDateTime currentTime = OffsetDateTime.now(ZoneId.of("Africa/Harare"));
+        int min = 100000;
+        int max = 999999;
+        int otpNumber = (int) (Math.random() * (max - min + 1) + min);
+
+        String subject = "One-Time Pin";
+        String message = "Your Green Wash One-Time Pin is: " + otpNumber;
+        try {
+            sendEmail(email, subject, message);
+
+            Otp otp = new Otp();
+            otp.setClientId(email);
+            otp.setOtpNumber(otpNumber);
+            otp.setStartTime(currentTime.toString());
+            otp.setEndTime(currentTime.plusMinutes(5).toString());
+            otpRepo.save(otp);
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void resendAdminCellOtp(String cellNum) {
+        Otp otp = otpRepo.findByClientId(cellNum);
+        if(!Objects.isNull(otp)) {
+            otpRepo.delete(otpRepo.findByClientId(cellNum));
+            sendAdminCellOtp(cellNum);
+        }
+    }
+
+    public void resendAdminEmailOtp(String email) {
+        Otp otp = otpRepo.findByClientId(email);
+        if(!Objects.isNull(otp)) {
+            otpRepo.delete(otp);
+            sendAdminEmailOtp(email);
+        }
+    }
+
 
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -138,4 +187,6 @@ public class OtpService {
         message.setText(text);
         javaMailSender.send(message);
     }
+
+
 }

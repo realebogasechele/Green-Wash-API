@@ -83,11 +83,18 @@ public class ClientController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/verifyOtp/{otpNumber}/{time}")
+    @GetMapping("/verifyOtp/{otpNumber}/{time}/{id}")
     public ResponseEntity<String> verifyOtp(@PathVariable("otpNumber") Integer otpNumber,
-                                            @PathVariable("time") String time){
-        String status = clientService.verifyOtp(otpNumber, time);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+                                            @PathVariable("time") String time,
+                                            @PathVariable("id") String id){
+        String response = clientService.verifyOtp(otpNumber, time, id);
+        if(response == "OTP ran out of time"){
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        }else if(response == "Invalid OTP"){
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/resendOtp/cell/{cellNum}")

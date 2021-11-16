@@ -3,10 +3,7 @@ package com.thegreenwash.api.service;
 import com.thegreenwash.api.exception.AdminNotFoundException;
 import com.thegreenwash.api.model.*;
 import com.thegreenwash.api.model.Package;
-import com.thegreenwash.api.repository.AdminRepo;
-import com.thegreenwash.api.repository.BookingRepo;
-import com.thegreenwash.api.repository.ComplexRepo;
-import com.thegreenwash.api.repository.PackageRepo;
+import com.thegreenwash.api.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -21,6 +18,7 @@ public class AdminService {
     private final AdminRepo adminRepo;
     private final MongoTemplate mongoTemplate;
     private final ComplexRepo complexRepo;
+    private final OtpRepo otpRepo;
     private final PackageRepo packageRepo;
     private final BookingRepo bookingRepo;
     private final AgentService agentService;
@@ -31,12 +29,13 @@ public class AdminService {
     private final PromotionService promotionService;
 
     @Autowired
-    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentService agentService, BookingService bookingService,
+    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, OtpRepo otpRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentService agentService, BookingService bookingService,
                         OtpService otpService, ComplexService complexService, PackageService packageService,
                         PromotionService promotionService) {
         this.adminRepo = adminRepo;
         this.mongoTemplate = mongoTemplate;
         this.complexRepo = complexRepo;
+        this.otpRepo = otpRepo;
         this.packageRepo = packageRepo;
         this.bookingRepo = bookingRepo;
         this.agentService = agentService;
@@ -74,19 +73,46 @@ public class AdminService {
     public String verifyCellNum(String cellNum){
        Admin admin = adminRepo.findByCellNum(cellNum);
        if(!Objects.isNull(admin)){
-           sendOtp(cellNum);
-           return "Otp Sent!";
+           sendCellOtp(cellNum);
+           return "Otp Sent.";
        }else{
            return "Admin does not exist.";
        }
     }
-
-    private void sendOtp(String cellNum) {
-        otpService.sendAdminOtp(cellNum);
+    public String verifyEmail(String email) {
+        Admin admin = adminRepo.findByEmail(email);
+        Otp otpEmail = otpRepo.findByClientId(email);
+        Otp otpCell = otpRepo.findByClientId(admin.getCellNum());
+        if(!Objects.isNull(admin)) {
+            if (Objects.isNull(otpEmail) && Objects.isNull(otpCell)) {
+                sendEmailOtp(email);
+                return "Otp Sent.";
+            } else {
+                return "An OTP with this account already exists.";
+            }
+        }else{
+            return "Admin with the email " + email + " does not exist.";
+        }
     }
 
-    public String verifyOtp(Integer otpNumber, String time){
-        return otpService.verifyOtp(otpNumber, time);
+    private void sendEmailOtp(String email) {
+        otpService.sendAdminEmailOtp(email);
+    }
+
+    private void sendCellOtp(String cellNum) {
+        otpService.sendAdminCellOtp(cellNum);
+    }
+
+    public void resendCellOtp(String cellNum){
+        otpService.resendAdminCellOtp(cellNum);
+    }
+
+    public void resendEmailOtp(String email){
+        otpService.resendAdminEmailOtp(email);
+    }
+
+    public String verifyOtp(Integer otpNumber, String time, String id){
+        return otpService.verifyOtp(otpNumber, time, id);
     }
 
     public String changePassword(Admin admin){
@@ -298,4 +324,6 @@ public class AdminService {
         return result;
 
     }
+
+
 }

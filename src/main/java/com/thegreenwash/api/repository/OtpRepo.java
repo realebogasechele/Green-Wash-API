@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface OtpRepo extends MongoRepository<Otp, String> {
     Otp findByOtpNumber(Integer otp);
 
-    Optional<Otp> findByClientId(String clientId);
+    Otp findByClientId(String clientId);
 }

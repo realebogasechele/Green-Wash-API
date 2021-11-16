@@ -161,8 +161,8 @@ public class ClientService {
 
     }
 
-    public String verifyOtp(Integer otpNumber, String time){
-        return otpService.verifyOtp(otpNumber, time);
+    public String verifyOtp(Integer otpNumber, String time, String id){
+        return otpService.verifyOtp(otpNumber, time, id);
     }
 
     public void resendCellOtp(String cellNum){
