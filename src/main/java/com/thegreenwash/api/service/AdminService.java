@@ -81,16 +81,10 @@ public class AdminService {
     }
     public String verifyEmail(String email) {
         Admin admin = adminRepo.findByEmail(email);
-        Otp otpEmail = otpRepo.findByClientId(email);
-        Otp otpCell = otpRepo.findByClientId(admin.getCellNum());
         if(!Objects.isNull(admin)) {
-            if (Objects.isNull(otpEmail) && Objects.isNull(otpCell)) {
                 sendEmailOtp(email);
                 return "Otp Sent.";
-            } else {
-                return "An OTP with this account already exists.";
-            }
-        }else{
+            } else{
             return "Admin with the email " + email + " does not exist.";
         }
     }
