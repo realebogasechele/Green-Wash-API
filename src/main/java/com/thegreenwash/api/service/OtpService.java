@@ -147,12 +147,15 @@ public class OtpService {
         int otpNumber = (int) (Math.random() * (max - min + 1) + min);
 
         String subject = "One-Time Pin";
-        String message = "Your Green Wash One-Time Pin is: " + otpNumber;
+        String message = "Your Green Wash One-Time Pin is: " + otpNumber + "\n"
+                + "\n"
+                + "\n"
+                + "If you don't recognise " + email + " you can safely ignore this email.";
         try {
             sendEmail(email, subject, message);
 
             Otp otp = new Otp();
-            otp.setClientId(email);
+            otp.setClientId(adminRepo.findByEmail(email).getAdminId());
             otp.setOtpNumber(otpNumber);
             otp.setStartTime(currentTime.toString());
             otp.setEndTime(currentTime.plusMinutes(5).toString());

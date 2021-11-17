@@ -36,10 +36,10 @@ public class AdminController {
     }
 
     @GetMapping("/login/{cellNum}/{password}")
-    public ResponseEntity<Admin> login(@PathVariable("cellNum") String cellNum,
+    public ResponseEntity<String> login(@PathVariable("cellNum") String cellNum,
                                        @PathVariable("password") String password) {
-        Admin admin = adminService.login(cellNum, password);
-        return new ResponseEntity<>(admin, HttpStatus.ACCEPTED);
+        String adminId = adminService.login(cellNum, password);
+        return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/get/{adminId}")

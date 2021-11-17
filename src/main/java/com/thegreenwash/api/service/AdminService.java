@@ -4,6 +4,7 @@ import com.thegreenwash.api.exception.AdminNotFoundException;
 import com.thegreenwash.api.model.*;
 import com.thegreenwash.api.model.Package;
 import com.thegreenwash.api.repository.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,7 +19,6 @@ public class AdminService {
     private final AdminRepo adminRepo;
     private final MongoTemplate mongoTemplate;
     private final ComplexRepo complexRepo;
-    private final OtpRepo otpRepo;
     private final PackageRepo packageRepo;
     private final BookingRepo bookingRepo;
     private final AgentService agentService;
@@ -29,13 +29,12 @@ public class AdminService {
     private final PromotionService promotionService;
 
     @Autowired
-    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, OtpRepo otpRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentService agentService, BookingService bookingService,
+    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentService agentService, BookingService bookingService,
                         OtpService otpService, ComplexService complexService, PackageService packageService,
                         PromotionService promotionService) {
         this.adminRepo = adminRepo;
         this.mongoTemplate = mongoTemplate;
         this.complexRepo = complexRepo;
-        this.otpRepo = otpRepo;
         this.packageRepo = packageRepo;
         this.bookingRepo = bookingRepo;
         this.agentService = agentService;
@@ -46,7 +45,7 @@ public class AdminService {
         this.promotionService = promotionService;
     }
 
-    public String addAdmin(Admin admin){
+    public String addAdmin(@NotNull Admin admin){
         if(Objects.isNull(adminRepo.findByCellNum(admin.getCellNum()))){
             adminRepo.save(admin);
             return "Account created successfully!";
@@ -55,18 +54,15 @@ public class AdminService {
         }
     }
 
-    public String updateAdmin(Admin admin){
-        if(!Objects.isNull(adminRepo.findById(admin.getAdminId()))) {
-            adminRepo.save(admin);
-            return "Account updated successfully!";
-        }else{
-            return "Admin does not exist!";
-        }
+    public String updateAdmin(@NotNull Admin admin){
+        adminRepo.findById(admin.getAdminId());
+        adminRepo.save(admin);
+        return "Account updated successfully!";
     }
 
-    public Admin login(String cellNum, String password){
+    public String login(String cellNum, String password){
         return adminRepo.findByCellNumAndPassword(cellNum, password)
-                .orElseThrow(()-> new AdminNotFoundException("Invalid cellphone number or password!"));
+                .orElseThrow(()-> new AdminNotFoundException("Invalid cellphone number or password!")).getAdminId();
     }
 
     //Forgotten Password Related
