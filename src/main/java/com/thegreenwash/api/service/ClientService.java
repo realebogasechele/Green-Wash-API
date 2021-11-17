@@ -141,7 +141,7 @@ public class ClientService {
     public String sendCellOtp(String cellNum){
         try{
             otpService.sendClientCellOtp(cellNum);
-            return "OTP sent.";
+            return cellNum;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +153,7 @@ public class ClientService {
     public String sendEmailOtp(String email){
         try{
             otpService.sendClientEmailOtp(email);
-            return "OTP Sent.";
+            return email;
         }catch (Exception ex){
             ex.printStackTrace();
             return "OTP not sent.";
