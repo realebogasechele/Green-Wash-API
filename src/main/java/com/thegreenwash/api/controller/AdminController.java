@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     @PostMapping("/forgot/verify/email/{email}")
-    public ResponseEntity<String> verifyEmail(@PathVariable("cellNum") String email) {
+    public ResponseEntity<String> verifyEmail(@PathVariable("email") String email) {
         String response = adminService.verifyEmail(email);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

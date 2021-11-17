@@ -98,7 +98,7 @@ public class OtpService {
     public String verifyOtp(Integer otpNumber, String time, String id) {
         OffsetDateTime offset = OffsetDateTime.parse(time);
         Otp otp = otpRepo.findByOtpNumber(otpNumber);
-        if(otp.getClientId() == id) {
+        if(otp.getClientId().equals(id)) {
             if (Objects.isNull(otp) == false) {
                 if (offset.isBefore(OffsetDateTime.parse(otp.getEndTime()))) {
                     otpRepo.delete(otp);
@@ -108,10 +108,10 @@ public class OtpService {
                     return "OTP ran out of time";
                 }
             } else {
-                return "Invalid OTP";
+                return "No Otp";
             }
         }else{
-            return "Invalid OTP";
+            return "here you are";
         }
     }
 
