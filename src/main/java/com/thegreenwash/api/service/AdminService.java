@@ -74,7 +74,7 @@ public class AdminService {
        Admin admin = adminRepo.findByCellNum(cellNum);
        if(!Objects.isNull(admin)){
            sendCellOtp(cellNum);
-           return "Otp Sent.";
+           return admin.getAdminId();
        }else{
            return "Admin does not exist.";
        }
@@ -83,7 +83,7 @@ public class AdminService {
         Admin admin = adminRepo.findByEmail(email);
         if(!Objects.isNull(admin)) {
                 sendEmailOtp(email);
-                return "Otp Sent.";
+                return admin.getAdminId();
             } else{
             return "Admin with the email " + email + " does not exist.";
         }
