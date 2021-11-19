@@ -9,10 +9,6 @@ import com.thegreenwash.api.repository.ComplexRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,12 +42,12 @@ public class ClientService {
                     () -> new ComplexNotFoundException("Not Found!")).getUnits();
             boolean found = false;
             for (String unit: units) {
-                if (unit == client.getUnitNum()) {
+                if (unit.equals(client.getUnitNum())) {
                     found = true;
-
+                    break;
                 }
             }
-            if (found == true) {
+            if (found) {
                 return "Unit does not exist";
             } else {
                 Client temp = clientRepo.findByCellNum(client.getCellNum());
@@ -82,7 +78,7 @@ public class ClientService {
 
     public String verifyCellNumber(String cellNum){
         Client client = clientRepo.findByCellNum(cellNum);
-        if(Objects.isNull(client)) {
+        if(!Objects.isNull(client)) {
             return client.getClientId();
         }else{
             return "Client does not exist!";
@@ -103,8 +99,7 @@ public class ClientService {
             return clientRepo.findByCellNumAndPassword(cellNum, password)
                     .orElseThrow(() -> new ClientNotFoundException("Invalid cell number or password"));
         }catch (ClientNotFoundException e){
-            Client emptyClient = new Client();
-            return emptyClient;
+            return new Client();
         }
     }
 
@@ -129,8 +124,8 @@ public class ClientService {
         return bookingService.addBooking(booking);
     }
 
-    public List<String> getSuggestedTimes(String complexName, String packageId, String date){
-        return bookingService.getSuggestedTimes(complexName, packageId, date);
+    public List<String> getSuggestedTimes(String complexName, String date){
+        return bookingService.getSuggestedTimes(complexName, date);
     }
 
     public Agent getAgentDetails(String bookingId){
@@ -197,6 +192,11 @@ public class ClientService {
 
     public Client getClientDetails(String clientId) {
         return clientRepo.findById(clientId).orElseThrow(()-> new ClientNotFoundException("Does not exist!"));
+    }
+
+    //Complex Related
+    public List<Complex> getComplexes(){
+        return complexRepo.findAll();
     }
 
 

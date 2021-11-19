@@ -107,7 +107,11 @@ public class ClientController {
     @PostMapping("booking/add")
     public ResponseEntity<String> addBooking(@RequestBody Booking booking){
         String status = clientService.addBooking(booking);
-        return new ResponseEntity<>(status, HttpStatus.CREATED);
+        if(status == "Success") {
+            return new ResponseEntity<>(status, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(status, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @GetMapping("booking/viewBookings/{clientId}")
@@ -116,12 +120,15 @@ public class ClientController {
         return new ResponseEntity<>(bookings, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("booking/getSuggestedTimes/{complexName}/{packageId}/{date}")
+    @GetMapping("booking/getSuggestedTimes/{complexName}/{date}")
     public ResponseEntity<List<String>> getSuggestedTimes(@PathVariable("complexName") String complexName,
-                                                              @PathVariable("packageId") String packageId,
                                                               @PathVariable("date") String date){
-        List<String> times = clientService.getSuggestedTimes(complexName,packageId,date);
-        return new ResponseEntity<>(times, HttpStatus.ACCEPTED);
+        List<String> times = clientService.getSuggestedTimes(complexName, date);
+        if(times.isEmpty()){
+            return new ResponseEntity<>(times, HttpStatus.NOT_ACCEPTABLE);
+        }else {
+            return new ResponseEntity<>(times, HttpStatus.ACCEPTED);
+        }
     }
 
     @GetMapping("booking/getAgentDetails/{bookingId}")
@@ -160,5 +167,16 @@ public class ClientController {
     public ResponseEntity<List<Vehicle>> getAllVehicles(@PathVariable("clientId") String clientId){
         List<Vehicle> vehicles = clientService.getAllVehicles(clientId);
         return new ResponseEntity<>(vehicles, HttpStatus.ACCEPTED);
+    }
+
+    //Complex Related
+    @GetMapping("/complex/get/all")
+    public ResponseEntity<List<Complex>> getComplexes(){
+        List<Complex> response = clientService.getComplexes();
+        if(response.isEmpty()){
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 }

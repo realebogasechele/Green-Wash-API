@@ -12,9 +12,9 @@ public interface BookingRepo extends MongoRepository<Booking, String> {
 
     List<Booking> findAllByDate(String localDate);
 
-    List<Booking> findAllByPackageId(String packageId);
+    List<Booking> findAllByPackageName(String packageId);
 
     List<Booking> findAllByAgentIdAndDate(String agentId, String toString);
 
-    List<Booking> findAllByComplexIdAndDateAndIsComplete(String complexId, String toString, boolean isComplete);
+    List<Booking> findAllByComplexNameAndDateAndIsComplete(String complexId, String toString, boolean isComplete);
 }

@@ -1,6 +1,5 @@
 package com.thegreenwash.api.service;
 
-import com.thegreenwash.api.exception.OtpNotFoundException;
 import com.thegreenwash.api.model.Otp;
 import com.thegreenwash.api.repository.AdminRepo;
 import com.thegreenwash.api.repository.OtpRepo;
@@ -99,7 +98,7 @@ public class OtpService {
         OffsetDateTime offset = OffsetDateTime.parse(time);
         Otp otp = otpRepo.findByOtpNumber(otpNumber);
         if(otp.getClientId().equals(id)) {
-            if (Objects.isNull(otp) == false) {
+            if (!Objects.isNull(otp)) {
                 if (offset.isBefore(OffsetDateTime.parse(otp.getEndTime()))) {
                     otpRepo.delete(otp);
                     return otp.getClientId();

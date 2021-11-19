@@ -1,6 +1,5 @@
 package com.thegreenwash.api.model;
 
-import java.time.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -17,9 +16,9 @@ public class Booking {
     @Field
     private String agentId;
     @Field
-    private String complexId;
+    private String complexName;
     @Field
-    private String packageId;
+    private String packageName;
     @Field
     private String price;
     @Field
@@ -31,7 +30,7 @@ public class Booking {
     @Field
     private String endTime;
     @Field
-    private ZoneId timeZone;
+    private String timeZone;
     @Field
     private Boolean isComplete;
     @Field
@@ -47,16 +46,16 @@ public class Booking {
     }
 
     public Booking(String clientId, String vehicleId, String agentId,
-                   String complexId, String packageId, String price,
+                   String complexName, String packageName, String price,
                    String paymentMethod, String date, String startTime,
-                   String endTime, ZoneId timeZone, Boolean isComplete,
-                   String reasonForIncomplete, Boolean isIncomplete, Boolean refund,
-                   Boolean isRefunded) {
+                   String endTime, String timeZone, Boolean isComplete,
+                   String reasonForIncomplete, Boolean isIncomplete,
+                   Boolean refund, Boolean isRefunded) {
         this.clientId = clientId;
         this.vehicleId = vehicleId;
         this.agentId = agentId;
-        this.complexId = complexId;
-        this.packageId = packageId;
+        this.complexName = complexName;
+        this.packageName = packageName;
         this.price = price;
         this.paymentMethod = paymentMethod;
         this.date = date;
@@ -102,20 +101,28 @@ public class Booking {
         this.agentId = agentId;
     }
 
-    public String getComplexId() {
-        return complexId;
+    public String getComplexName() {
+        return complexName;
     }
 
-    public void setComplexId(String complexId) {
-        this.complexId = complexId;
+    public void setComplexName(String complexName) {
+        this.complexName = complexName;
     }
 
-    public String getPackageId() {
-        return packageId;
+    public String getPackageName() {
+        return packageName;
     }
 
-    public void setPackageId(String packageId) {
-        this.packageId = packageId;
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
     }
 
     public String getPrice() {
@@ -156,14 +163,6 @@ public class Booking {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
-    }
-
-    public ZoneId getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(ZoneId timeZone) {
-        this.timeZone = timeZone;
     }
 
     public Boolean getComplete() {

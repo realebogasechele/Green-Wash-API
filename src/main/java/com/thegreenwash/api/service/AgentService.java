@@ -60,6 +60,9 @@ public class AgentService {
             return "Invalid Cell number or Password!";
         }
     }
+    public Agent findById(String agentId){
+        return agentRepo.findById(agentId).orElseThrow(()-> new AgentNotFoundException("Not Found!"));
+    }
 
     public List<Booking> viewBookings(String agentId){
         return bookingService.agentViewBookings(agentId);
@@ -69,8 +72,8 @@ public class AgentService {
         return "Agent disabled!";
     }
 
-    public Agent findById(String agentId){
-        return agentRepo.findById(agentId).orElseThrow(()-> new AgentNotFoundException("Agent does not exist!"));
+    public Agent findBySurname(String agentSurname){
+        return agentRepo.findBySurname(agentSurname);
     }
     public List<Agent> findAll(){
         return agentRepo.findAll();

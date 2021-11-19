@@ -11,4 +11,6 @@ public interface AdminRepo extends MongoRepository<Admin, String> {
     Admin findByCellNum(String cellNum);
 
     Admin findByEmail(String email);
+
+    Optional<Admin> findByEmailAndPassword(String email, String password);
 }

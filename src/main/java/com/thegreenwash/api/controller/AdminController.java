@@ -35,10 +35,16 @@ public class AdminController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/login/{cellNum}/{password}")
-    public ResponseEntity<String> login(@PathVariable("cellNum") String cellNum,
-                                       @PathVariable("password") String password) {
-        String adminId = adminService.login(cellNum, password);
+    @GetMapping("/login/cell/{cellNum}/{password}")
+    public ResponseEntity<String> cellLogin (@PathVariable("cellNum") String cellNum,
+                                             @PathVariable("password") String password) {
+        String adminId = adminService.cellLogin(cellNum, password);
+        return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+    }
+    @GetMapping("/login/email/{email}/{password}")
+    public ResponseEntity<String> emailLogin (@PathVariable("email") String email,
+                                              @PathVariable("password") String password) {
+        String adminId = adminService.emailLogin(email, password);
         return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
     }
 
@@ -66,9 +72,9 @@ public class AdminController {
                                             @PathVariable("time") String time,
                                             @PathVariable("id") String id) {
         String response = adminService.verifyOtp(otpNumber, time, id);
-        if(response == "OTP ran out of time"){
+        if(response.equals("OTP ran out of time")){
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-        }else if(response == "Invalid OTP"){
+        }else if(response.equals("Invalid OTP")){
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }else {
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -88,11 +94,18 @@ public class AdminController {
     @PostMapping("/forgot/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody Admin admin){
         String response = adminService.changePassword(admin);
-        if(response == "Password Changed.") {
+        if(response.equals("Password Changed.")) {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(response,HttpStatus.CONFLICT);
         }
+    }
+
+    //Client Related
+    @GetMapping("/client/get/all")
+    public ResponseEntity<List<Client>> getClients(){
+        List<Client> response = adminService.getClients();
+            return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //Booking Related

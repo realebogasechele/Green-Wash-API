@@ -21,6 +21,7 @@ public class AdminService {
     private final ComplexRepo complexRepo;
     private final PackageRepo packageRepo;
     private final BookingRepo bookingRepo;
+    private final ClientRepo clientRepo;
     private final AgentService agentService;
     private final BookingService bookingService;
     private final OtpService otpService;
@@ -29,7 +30,7 @@ public class AdminService {
     private final PromotionService promotionService;
 
     @Autowired
-    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentService agentService, BookingService bookingService,
+    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, ClientRepo clientRepo, AgentService agentService, BookingService bookingService,
                         OtpService otpService, ComplexService complexService, PackageService packageService,
                         PromotionService promotionService) {
         this.adminRepo = adminRepo;
@@ -37,6 +38,7 @@ public class AdminService {
         this.complexRepo = complexRepo;
         this.packageRepo = packageRepo;
         this.bookingRepo = bookingRepo;
+        this.clientRepo = clientRepo;
         this.agentService = agentService;
         this.bookingService = bookingService;
         this.otpService = otpService;
@@ -60,9 +62,13 @@ public class AdminService {
         return "Account updated successfully!";
     }
 
-    public String login(String cellNum, String password){
+    public String cellLogin(String cellNum, String password){
         return adminRepo.findByCellNumAndPassword(cellNum, password)
                 .orElseThrow(()-> new AdminNotFoundException("Invalid cellphone number or password!")).getAdminId();
+    }
+    public String emailLogin(String email, String password){
+        return adminRepo.findByEmailAndPassword(email, password)
+                .orElseThrow(()-> new AdminNotFoundException("")).getAdminId();
     }
 
     //Forgotten Password Related
@@ -231,7 +237,7 @@ public class AdminService {
         List<Package> packages = packageRepo.findAll();
 
         for(Package pack: packages) {
-            bookings = bookingRepo.findAllByPackageId(pack.getPackageId());
+            bookings = bookingRepo.findAllByPackageName(pack.getPackageName());
             response.add(new ResponseObject(pack.getPackageName(), bookings.size()));
         }
         return response;
@@ -290,7 +296,7 @@ public class AdminService {
         List<Booking> bookings;
         Map<String, Integer> numberOfPackages = new HashMap<>();
         for(Package pack: packages){
-            bookings = bookingRepo.findAllByPackageId(pack.getPackageId());
+            bookings = bookingRepo.findAllByPackageName(pack.getPackageName());
             numberOfPackages.put(pack.getPackageName(), bookings.size());
         }
 
@@ -316,4 +322,7 @@ public class AdminService {
     }
 
 
+    public List<Client> getClients() {
+        return clientRepo.findAll();
+    }
 }

@@ -1,7 +1,5 @@
 package com.thegreenwash.api.model;
 
-import java.time.ZonedDateTime;
-
 public class Otp {
     private String id;
 

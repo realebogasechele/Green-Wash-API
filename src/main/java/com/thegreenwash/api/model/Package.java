@@ -1,6 +1,5 @@
 package com.thegreenwash.api.model;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 

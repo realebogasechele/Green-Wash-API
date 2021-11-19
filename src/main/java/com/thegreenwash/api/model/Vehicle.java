@@ -3,7 +3,6 @@ package com.thegreenwash.api.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.stereotype.Component;
 
 @Document
 public class Vehicle {
