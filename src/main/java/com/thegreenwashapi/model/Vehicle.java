@@ -1,0 +1,69 @@
+package com.thegreenwashapi.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+@Document
+public class Vehicle {
+    @Id
+    private String vehicleId;
+
+    @Field
+    private String clientId;
+    @Field
+    private String modelName;
+    @Field
+    private String vehicleRegistration;
+    @Field
+    private String vehicleType;
+
+    public Vehicle(){}
+
+    public Vehicle(String clientId, String modelName, String vehicleRegistration, String vehicleType) {
+        this.clientId = clientId;
+        this.modelName = modelName;
+        this.vehicleRegistration = vehicleRegistration;
+        this.vehicleType = vehicleType;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    public String getVehicleRegistration() {
+        return vehicleRegistration;
+    }
+
+    public void setVehicleRegistration(String vehicleRegistration) {
+        this.vehicleRegistration = vehicleRegistration;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+}
