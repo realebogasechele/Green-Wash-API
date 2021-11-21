@@ -66,7 +66,6 @@ public class BookingService {
                                 .orElseThrow(() -> new PackageNotFoundException("Not Found."))
                                 .getMinutes())
                                 .toString());
-                booking.setDate(startTime.toLocalDate().toString());
                 bookingRepo.save(booking);
                 return "Success";
             }
