@@ -24,15 +24,23 @@ public class ClientController {
     //Client Related
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(@RequestBody Client client){
-        String status = clientService.addClient(client);
-        return new ResponseEntity<>(status, HttpStatus.CREATED);
+        String response = clientService.addClient(client);
+        if(response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/login/{cellNum}/{password}")
     public ResponseEntity<Client> login(@PathVariable("cellNum") String cellNum,
                                         @PathVariable("password") String password){
         Client client = clientService.login(cellNum,password);
-        return new ResponseEntity<>(client, HttpStatus.ACCEPTED);
+        if(client.equals(new Client())){
+            return new ResponseEntity<>(client, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(client, HttpStatus.NO_CONTENT);
+        }
     }
 
     @PostMapping("/update")
@@ -49,21 +57,33 @@ public class ClientController {
 
     @GetMapping("/verify/cell/{cellNum}")
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum){
-        String status = clientService.verifyCellNumber(cellNum);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        String response = clientService.verifyCellNumber(cellNum);
+        if(response.equals("error")){
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }
     }
 
     @GetMapping("/verify/email/{email}")
     public ResponseEntity<String> verifyEmail (@PathVariable("email") String email){
-        String status = clientService.verifyEmail(email);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        String response = clientService.verifyEmail(email);
+        if(response.equals("error")){
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }
     }
 
     //Forgotten Password
     @PostMapping("forgot/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody Client client){
-        String status = clientService.changePassword(client);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        String response = clientService.changePassword(client);
+        if(response.equals("error")){
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
     //Otp Related

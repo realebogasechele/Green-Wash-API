@@ -3,10 +3,13 @@ package com.thegreenwashapi.service;
 import com.thegreenwashapi.exception.ComplexNotFoundException;
 import com.thegreenwashapi.model.Complex;
 import com.thegreenwashapi.repository.ComplexRepo;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 @Service
 public class ComplexService {
@@ -39,5 +42,26 @@ public class ComplexService {
 
     public List<Complex> getAllComplexes() {
         return complexRepo.findAll();
+    }
+
+    public List<String> getAllComplexNames() {
+        List<Complex> complexes = complexRepo.findAll();
+        List<String> complexNames = new ArrayList<>();
+
+        for (Complex complex: complexes) {
+            complexNames.add(complex.getComplexName());
+        }
+
+        return complexNames;
+    }
+
+    @Deprecated
+    private List<String> fillComplexNames(@NotNull Stack<Complex> complexes, List<String> complexNames){
+        if(complexes.isEmpty()){
+            return complexNames;
+        }else{
+            complexNames.add(complexes.pop().getComplexName());
+            return fillComplexNames(complexes, complexNames);
+        }
     }
 }

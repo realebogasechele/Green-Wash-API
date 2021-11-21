@@ -3,6 +3,7 @@ package com.thegreenwashapi.controller;
 import com.thegreenwashapi.model.*;
 import com.thegreenwashapi.service.AdminService;
 import com.thegreenwashapi.model.Package;
+import io.jsonwebtoken.lang.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,27 +26,43 @@ public class AdminController {
     //Admin Related
     @PostMapping("/signUp")
     public ResponseEntity<String> addAdmin(@RequestBody Admin admin) {
-        String status = adminService.addAdmin(admin);
-        return new ResponseEntity<>(status, HttpStatus.CREATED);
+        String response = adminService.addAdmin(admin);
+        if(response.equals("success")) {
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }
     }
 
     @PostMapping("/update")
     public ResponseEntity<String> updateAdmin(@RequestBody Admin admin) {
-        String status = adminService.updateAdmin(admin);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        String response = adminService.updateAdmin(admin);
+        if(response.equals("success")) {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/login/cell/{cellNum}/{password}")
     public ResponseEntity<String> cellLogin (@PathVariable("cellNum") String cellNum,
                                              @PathVariable("password") String password) {
         String adminId = adminService.cellLogin(cellNum, password);
-        return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+        if(!adminId.equals("error")) {
+            return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(adminId, HttpStatus.BAD_REQUEST);
+        }
     }
     @GetMapping("/login/email/{email}/{password}")
     public ResponseEntity<String> emailLogin (@PathVariable("email") String email,
                                               @PathVariable("password") String password) {
         String adminId = adminService.emailLogin(email, password);
-        return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+        if(!adminId.equals("error")) {
+            return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(adminId, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/get/{adminId}")
@@ -105,7 +122,11 @@ public class AdminController {
     @GetMapping("/client/get/all")
     public ResponseEntity<List<Client>> getClients(){
         List<Client> response = adminService.getClients();
+        if(response.isEmpty()){
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }else {
             return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
     @DeleteMapping("/client/remove/{clientId}")
     public ResponseEntity<String> removeClient(@PathVariable("clientId") String clientId){
@@ -166,7 +187,11 @@ public class AdminController {
     @GetMapping("/agent/get/all")
     public ResponseEntity<List<Agent>> getAllAgent() {
         List<Agent> agents = adminService.getAllAgents();
-        return new ResponseEntity<>(agents, HttpStatus.ACCEPTED);
+        if(agents.isEmpty()){
+            return new ResponseEntity<>(agents, HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(agents, HttpStatus.ACCEPTED);
+        }
     }
 
     //Complex Related
@@ -191,13 +216,26 @@ public class AdminController {
     @GetMapping("/complex/get/all")
     public ResponseEntity<List<Complex>> getComplexes() {
         List<Complex> complexes = adminService.getComplexes();
-        return new ResponseEntity<>(complexes, HttpStatus.ACCEPTED);
+        if(complexes.isEmpty()) {
+            return new ResponseEntity<>(complexes, HttpStatus.NO_CONTENT);
+        }else{
+            return new ResponseEntity<>(complexes, HttpStatus.ACCEPTED);
+        }
     }
 
     @GetMapping("/complex/get/{complexId}")
     public ResponseEntity<Complex> getComplexes(@PathVariable("complexId") String complexId) {
         Complex complex = adminService.findByComplexId(complexId);
         return new ResponseEntity<>(complex, HttpStatus.ACCEPTED);
+    }
+    @GetMapping("/complex/get/all/names")
+    public ResponseEntity<List<String>> getComplexNames(){
+        List<String> response = adminService.getAllComplexNames();
+        if(response.isEmpty()){
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
     //Package Related
@@ -229,6 +267,16 @@ public class AdminController {
     public ResponseEntity<List<Package>> getPackages() {
         List<Package> packages = adminService.getPackages();
         return new ResponseEntity<>(packages, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/package/get/all/names")
+    public ResponseEntity<List<String>> getPackageNames() {
+        List<String> response = adminService.getPackageNames();
+        if(response.isEmpty()){
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }
     }
 
     //Promotion Related

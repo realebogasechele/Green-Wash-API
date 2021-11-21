@@ -1,5 +1,6 @@
 package com.thegreenwashapi.service;
 
+import com.thegreenwashapi.config.PBKDF2Hasher;
 import com.thegreenwashapi.exception.AgentNotFoundException;
 import com.thegreenwashapi.exception.ComplexNotFoundException;
 import com.thegreenwashapi.model.Agent;
@@ -16,55 +17,60 @@ import java.util.Objects;
 @Service
 public class AgentService {
     public final AgentRepo agentRepo;
+    public final PBKDF2Hasher hasher;
     public final ComplexRepo complexRepo;
     public final BookingService bookingService;
 
     @Autowired
-    public AgentService(AgentRepo agentRepo, ComplexRepo complexRepo, BookingService bookingService) {
+    public AgentService(AgentRepo agentRepo, PBKDF2Hasher hasher, ComplexRepo complexRepo, BookingService bookingService) {
         this.agentRepo = agentRepo;
+        this.hasher = hasher;
         this.complexRepo = complexRepo;
         this.bookingService = bookingService;
     }
 
-    public String addAgent(Agent agent){
+    public String addAgent(Agent agent) {
         Agent temp = agentRepo.findByCellNum(agent.getCellNum());
-        if(!Objects.isNull(temp)) {
+        if (!Objects.isNull(temp)) {
             return "Agent already exists!";
-        }
-        else{
+        } else {
             try {
-                Complex complex =complexRepo.findByComplexName(agent.getComplexName()).orElseThrow(
+                Complex complex = complexRepo.findByComplexName(agent.getComplexName()).orElseThrow(
                         () -> new ComplexNotFoundException("Not Found!"));
 
                 complex.getAgents().add(agent.getSurname());
                 complexRepo.save(complex);
+                agent.setPassword(hasher.hash(agent.getPassword().toCharArray()));
                 agentRepo.save(agent);
                 return "Success";
 
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 return "Incorrect Entered Complex";
             }
         }
     }
-    public String updateAgent(Agent agent){
+
+    public String updateAgent(Agent agent) {
         agentRepo.save(agent);
         return "Agent updated successfully!";
     }
 
-    public String login(String cellNum, String password){
-        try {
-            return agentRepo.findByCellNumAndPassword(cellNum, password)
-                    .orElseThrow(() -> new AgentNotFoundException("Invalid Cell number or Password")).getAgentId();
-        }catch (Exception ex){
-            return "Invalid Cell number or Password!";
+    public String login(String cellNum, String password) {
+        Agent agent = agentRepo.findByCellNum(cellNum);
+        boolean check = hasher.checkPassword(password.toCharArray(), agent.getPassword());
+        if(check){
+            return agent.getAgentId();
+        }else{
+            return "error";
         }
     }
-    public Agent findById(String agentId){
-        return agentRepo.findById(agentId).orElseThrow(()-> new AgentNotFoundException("Not Found!"));
+
+    public Agent findById(String agentId) {
+        return agentRepo.findById(agentId).orElseThrow(() -> new AgentNotFoundException("Not Found!"));
     }
 
-    public List<Booking> viewBookings(String agentId){
+    public List<Booking> viewBookings(String agentId) {
         return bookingService.agentViewBookings(agentId);
     }
 
@@ -72,18 +78,20 @@ public class AgentService {
         return "Agent disabled!";
     }
 
-    public Agent findBySurname(String agentSurname){
+    @Deprecated
+    public Agent findBySurname(String agentSurname) {
         return agentRepo.findBySurname(agentSurname);
     }
-    public List<Agent> findAll(){
+
+    public List<Agent> findAll() {
         return agentRepo.findAll();
     }
 
-    public String incompleteBooking(Booking booking){
+    public String incompleteBooking(Booking booking) {
         return bookingService.inCompleteBooking(booking);
     }
 
-    public String completeBooking(String bookingId){
+    public String completeBooking(String bookingId) {
         return bookingService.completeBooking(bookingId);
     }
 }
