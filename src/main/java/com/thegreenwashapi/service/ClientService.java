@@ -73,6 +73,7 @@ public class ClientService {
     }
 
     public String updateClient(Client client) {
+        client.setPassword(hasher.hash(client.getPassword().toCharArray()));
         clientRepo.save(client);
         return "Success";
     }

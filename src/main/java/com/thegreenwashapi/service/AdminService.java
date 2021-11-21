@@ -64,6 +64,7 @@ public class AdminService {
     public String updateAdmin(@NotNull Admin admin) {
         try {
             adminRepo.findById(admin.getAdminId()).orElseThrow(() -> new AdminNotFoundException("Not Found."));
+            admin.setPassword(hasher.hash(admin.getPassword().toCharArray()));
             adminRepo.save(admin);
             return "success";
         } catch (Exception ex) {
