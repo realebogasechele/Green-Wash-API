@@ -51,7 +51,7 @@ public class ClientService {
                     break;
                 }
             }
-            if (found) {
+            if (!found) {
                 return "error";
             } else {
                 Client temp = clientRepo.findByCellNum(client.getCellNum());
@@ -68,7 +68,7 @@ public class ClientService {
                 }
             }
         } catch (ComplexNotFoundException e) {
-            return "Complex Does Not Exist!";
+            return "error";
         }
     }
 

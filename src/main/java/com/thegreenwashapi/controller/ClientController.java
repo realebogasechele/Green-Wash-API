@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -36,7 +37,7 @@ public class ClientController {
     public ResponseEntity<Client> login(@PathVariable("cellNum") String cellNum,
                                         @PathVariable("password") String password){
         Client client = clientService.login(cellNum,password);
-        if(client.equals(new Client())){
+        if(!client.equals(new Client())){
             return new ResponseEntity<>(client, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(client, HttpStatus.NO_CONTENT);
