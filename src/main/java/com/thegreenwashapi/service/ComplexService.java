@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -21,11 +22,33 @@ public class ComplexService {
     }
 
     public String addComplex(Complex complex){
+        OffsetDateTime startTime = OffsetDateTime.parse(complex.getStartTime());
+        OffsetDateTime endTime = OffsetDateTime.parse(complex.getEndTime());
+        startTime = startTime.withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+        endTime = endTime
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+        complex.setStartTime(startTime.toString());
+        complex.setEndTime(endTime.toString());
         complexRepo.save(complex);
         return "Complex added!";
     }
 
     public String updateComplex(Complex complex){
+        OffsetDateTime startTime = OffsetDateTime.parse(complex.getStartTime());
+        OffsetDateTime endTime = OffsetDateTime.parse(complex.getEndTime());
+        startTime = startTime.withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+        endTime = endTime
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0);
+        complex.setStartTime(startTime.toString());
+        complex.setEndTime(endTime.toString());
         complexRepo.save(complex);
         return  "Complex updated!";
     }

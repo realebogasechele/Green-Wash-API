@@ -67,7 +67,9 @@ public class AgentService {
     }
 
     public Agent findById(String agentId) {
-        return agentRepo.findById(agentId).orElseThrow(() -> new AgentNotFoundException("Not Found!"));
+        Agent agent = agentRepo.findById(agentId).orElseThrow(() -> new AgentNotFoundException("Not Found!"));
+        agent.setPassword("");
+        return agent;
     }
 
     public List<Booking> viewBookings(String agentId) {
@@ -84,7 +86,11 @@ public class AgentService {
     }
 
     public List<Agent> findAll() {
-        return agentRepo.findAll();
+        List<Agent> agents = agentRepo.findAll();
+        for (Agent agent: agents) {
+            agent.setPassword("");
+        }
+        return agents;
     }
 
     public String incompleteBooking(Booking booking) {

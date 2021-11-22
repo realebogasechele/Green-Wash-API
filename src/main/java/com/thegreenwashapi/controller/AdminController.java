@@ -188,7 +188,7 @@ public class AdminController {
     public ResponseEntity<List<Agent>> getAllAgent() {
         List<Agent> agents = adminService.getAllAgents();
         if(agents.isEmpty()){
-            return new ResponseEntity<>(agents, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(agents, HttpStatus.NOT_FOUND);
         }else {
             return new ResponseEntity<>(agents, HttpStatus.ACCEPTED);
         }

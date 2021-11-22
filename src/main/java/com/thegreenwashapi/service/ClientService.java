@@ -137,7 +137,9 @@ public class ClientService {
     }
 
     public Agent getAgentDetails(String bookingId) {
-        return agentService.findById(bookingService.findById(bookingId).getAgentId());
+        Agent agent = agentService.findById(bookingService.findById(bookingId).getAgentId());
+        agent.setPassword("");
+        return agent;
     }
 
     //Otp Related

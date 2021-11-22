@@ -283,7 +283,7 @@ public class AdminService {
         List<ResponseObject> response = new ArrayList<>();
 
         for (Complex complex : complexes) {
-            query.addCriteria(Criteria.where("complexId").is(complex.getComplexId()));
+            query.addCriteria(Criteria.where("complexName").is(complex.getComplexName()));
             List<Client> clients = mongoTemplate.find(query, Client.class);
             response.add(new ResponseObject(complex.getComplexName(), clients.size()));
         }
@@ -342,9 +342,9 @@ public class AdminService {
     public List<String> typeOfBookingsToday() {
         OffsetDateTime today = OffsetDateTime.now(ZoneId.of("Africa/Harare"));
         List<Booking> cashBookings = bookingRepo
-                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "cash");
+                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "Cash");
         List<Booking> cardBookings = bookingRepo
-                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "card");
+                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "Card");
 
         List<String> response = new ArrayList<>();
         response.add((Objects.toString(cashBookings.size())));
@@ -356,9 +356,9 @@ public class AdminService {
     public List<String> totalEarningsToday() {
         OffsetDateTime today = OffsetDateTime.now(ZoneId.of("Africa/Harare"));
         List<Booking> cashBookings = bookingRepo
-                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "cash");
+                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "Cash");
         List<Booking> cardBookings = bookingRepo
-                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "card");
+                .findAllByDateAndPaymentMethod(today.toLocalDate().toString(), "Card");
         int cash = 0;
         int card = 0;
         List<String> response = new ArrayList<>();
@@ -394,7 +394,11 @@ public class AdminService {
 
     //Client Related
     public List<Client> getClients() {
-        return clientRepo.findAll();
+        List<Client> clients = clientRepo.findAll();
+        for (Client client: clients) {
+            client.setPassword("");
+        }
+        return clients;
     }
 
     public String removeClient(String clientId) {
