@@ -37,10 +37,10 @@ public class ClientController {
     public ResponseEntity<Client> login(@PathVariable("cellNum") String cellNum,
                                         @PathVariable("password") String password){
         Client client = clientService.login(cellNum,password);
-        if(!client.equals(new Client())){
+        if(!Objects.isNull(client)){
             return new ResponseEntity<>(client, HttpStatus.OK);
         }else {
-            return new ResponseEntity<>(client, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(client, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

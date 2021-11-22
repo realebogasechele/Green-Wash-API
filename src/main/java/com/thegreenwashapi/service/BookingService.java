@@ -88,22 +88,22 @@ public class BookingService {
         OffsetDateTime selectedDate = OffsetDateTime.parse(date);
         List<Booking> bookings = bookingRepo
                 .findAllByComplexNameAndDateAndIsComplete(complex.getComplexId(), selectedDate.toLocalDate().toString(), false);
-        OffsetDateTime complexStartTime = OffsetDateTime.parse(complex.getStartTime());
-        OffsetDateTime complexEndTime = OffsetDateTime.parse(complex.getEndTime());
-        List<OffsetDateTime> bookingTimes = new ArrayList<>();
+        OffsetTime complexStartTime = OffsetDateTime.parse(complex.getStartTime()).toOffsetTime();
+        OffsetTime complexEndTime = OffsetDateTime.parse(complex.getEndTime()).toOffsetTime();
+        List<OffsetTime> bookingTimes = new ArrayList<>();
         for (Booking book : bookings) {
-            bookingTimes.add(OffsetDateTime.parse(book.getStartTime()));
+            bookingTimes.add(OffsetTime.parse(book.getStartTime()));
         }
         Collections.sort(bookingTimes);
-        List<OffsetDateTime> suggestedTimes = new ArrayList<>();
+        List<OffsetTime> suggestedTimes = new ArrayList<>();
 
         suggestedTimes = fillList(complexStartTime, complexEndTime, suggestedTimes);
 
-        OffsetDateTime now = OffsetDateTime.parse(date);
+        OffsetTime now = OffsetDateTime.parse(date).toOffsetTime();
 
         suggestedTimes.removeIf(now::isAfter);
 
-        for (OffsetDateTime bookingTime : bookingTimes) {
+        for (OffsetTime bookingTime : bookingTimes) {
             int index = Collections.binarySearch(suggestedTimes, bookingTime);
             if (index >= 0) {
                 suggestedTimes.remove(index);
@@ -111,13 +111,18 @@ public class BookingService {
         }
 
         List<String> availableTimes = new ArrayList<>();
-        for (OffsetDateTime suggestedTime : suggestedTimes) {
-            availableTimes.add(suggestedTime.toString());
+        for (OffsetTime suggestedTime : suggestedTimes) {
+            OffsetDateTime time = OffsetDateTime.parse(date);
+            time = time.withHour(suggestedTime.getHour());
+            time = time.withMinute(suggestedTime.getMinute());
+            time = time.withSecond(suggestedTime.getSecond());
+            time = time .withNano(0);
+            availableTimes.add(time.toString());
         }
         return availableTimes;
     }
 
-    private List<OffsetDateTime> fillList(OffsetDateTime complexStartTime, OffsetDateTime complexEndTime, List<OffsetDateTime> suggestedTimes) {
+    private List<OffsetTime> fillList(OffsetTime complexStartTime, OffsetTime complexEndTime, List<OffsetTime> suggestedTimes) {
         if (complexStartTime.equals(complexEndTime) || complexStartTime.isAfter(complexEndTime)) {
             return suggestedTimes;
         } else {

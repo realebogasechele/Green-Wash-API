@@ -107,7 +107,7 @@ public class ClientService {
             client.setPassword("");
             return client;
         } else {
-            return new Client();
+            return null;
         }
     }
 
