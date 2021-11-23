@@ -16,6 +16,10 @@ public class Booking {
     @Field
     private String agentId;
     @Field
+    private String clientName;
+    @Field
+    private String clientSurname;
+    @Field
     private String complexName;
     @Field
     private String packageName;
@@ -46,14 +50,16 @@ public class Booking {
     }
 
     public Booking(String clientId, String vehicleId, String agentId,
-                   String complexName, String packageName, String price,
-                   String paymentMethod, String date, String startTime,
-                   String endTime, String timeZone, Boolean isComplete,
-                   String reasonForIncomplete, Boolean isIncomplete,
-                   Boolean refund, Boolean isRefunded) {
+                   String clientName, String clientSurname, String complexName,
+                   String packageName, String price, String paymentMethod,
+                   String date, String startTime, String endTime,
+                   String timeZone, Boolean isComplete, String reasonForIncomplete,
+                   Boolean isIncomplete, Boolean refund, Boolean isRefunded) {
         this.clientId = clientId;
         this.vehicleId = vehicleId;
         this.agentId = agentId;
+        this.clientName = clientName;
+        this.clientSurname = clientSurname;
         this.complexName = complexName;
         this.packageName = packageName;
         this.price = price;
@@ -99,6 +105,22 @@ public class Booking {
 
     public void setAgentId(String agentId) {
         this.agentId = agentId;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public String getClientSurname() {
+        return clientSurname;
+    }
+
+    public void setClientSurname(String clientSurname) {
+        this.clientSurname = clientSurname;
     }
 
     public String getComplexName() {

@@ -1,14 +1,13 @@
 package com.thegreenwashapi.service;
 
 import com.thegreenwashapi.exception.BookingNotFoundException;
+import com.thegreenwashapi.exception.ClientNotFoundException;
 import com.thegreenwashapi.exception.ComplexNotFoundException;
 import com.thegreenwashapi.exception.PackageNotFoundException;
 import com.thegreenwashapi.model.Booking;
+import com.thegreenwashapi.model.Client;
 import com.thegreenwashapi.model.Complex;
-import com.thegreenwashapi.repository.AgentRepo;
-import com.thegreenwashapi.repository.BookingRepo;
-import com.thegreenwashapi.repository.ComplexRepo;
-import com.thegreenwashapi.repository.PackageRepo;
+import com.thegreenwashapi.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,18 +25,22 @@ public class BookingService {
     private final PackageRepo packageRepo;
     private final BookingRepo bookingRepo;
     private final AgentRepo agentRepo;
+    private final ClientRepo clientRepo;
 
     @Autowired
-    public BookingService(ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentRepo agentRepo) {
+    public BookingService(ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, AgentRepo agentRepo, ClientRepo clientRepo) {
         this.complexRepo = complexRepo;
         this.packageRepo = packageRepo;
         this.bookingRepo = bookingRepo;
         this.agentRepo = agentRepo;
+        this.clientRepo = clientRepo;
     }
 
     public String addBooking(@NotNull Booking booking) {
         OffsetDateTime startTime = OffsetDateTime.parse(booking.getStartTime());
         List<Booking> bookings = bookingRepo.findAllByDate(startTime.toLocalDate().toString());
+        Client client = clientRepo.findById(booking.getClientId())
+                .orElseThrow(()-> new ClientNotFoundException("Not Found."));
 
         if (bookings.isEmpty()) {
             booking.setAgentId(assignAgent(booking.getComplexName()));
@@ -48,6 +51,8 @@ public class BookingService {
                             .getMinutes())
                             .toString());
             booking.setDate(startTime.toLocalDate().toString());
+            booking.setClientName(client.getName());
+            booking.setClientSurname(client.getSurname());
             bookingRepo.save(booking);
             return "Success";
         } else {
@@ -66,6 +71,9 @@ public class BookingService {
                                 .orElseThrow(() -> new PackageNotFoundException("Not Found."))
                                 .getMinutes())
                                 .toString());
+                booking.setDate(startTime.toLocalDate().toString());
+                booking.setClientName(client.getName());
+                booking.setClientSurname(client.getSurname());
                 bookingRepo.save(booking);
                 return "Success";
             }

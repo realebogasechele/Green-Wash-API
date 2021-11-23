@@ -73,6 +73,29 @@ public class AdminService {
         }
     }
 
+    public String unifiedLogin(String username, String password){
+        Admin cellAdmin = adminRepo.findByCellNum(username);
+        Admin emailAdmin = adminRepo.findByEmail(username);
+        if(!Objects.isNull(cellAdmin) || !Objects.isNull(emailAdmin)){
+            if(!Objects.isNull(cellAdmin)){
+                boolean check = hasher.checkPassword(password.toCharArray(), cellAdmin.getPassword());
+                if(check){
+                    return cellAdmin.getAdminId();
+                }else{
+                    return "error";
+                }
+            }else{
+                boolean check = hasher.checkPassword(password.toCharArray(), emailAdmin.getPassword());
+                if(check){
+                    return emailAdmin.getAdminId();
+                }else{
+                    return "error";
+                }
+            }
+        }else{
+            return "error";
+        }
+    }
     public String cellLogin(String cellNum, String password) {
         Admin admin = adminRepo.findByCellNum(cellNum);
         boolean check = hasher.checkPassword(password.toCharArray(), admin.getPassword());

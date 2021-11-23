@@ -43,7 +43,18 @@ public class AdminController {
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
+    @GetMapping("/login/{username}/{password}")
+    public ResponseEntity<String> unifiedLogin (@PathVariable("username") String username,
+                                             @PathVariable("password") String password) {
+        String adminId = adminService.unifiedLogin(username, password);
+        if(!adminId.equals("error")) {
+            return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>("Invalid Cell Number or Password", HttpStatus.BAD_REQUEST);
+        }
+    }
 
+    @Deprecated
     @GetMapping("/login/cell/{cellNum}/{password}")
     public ResponseEntity<String> cellLogin (@PathVariable("cellNum") String cellNum,
                                              @PathVariable("password") String password) {
@@ -54,6 +65,7 @@ public class AdminController {
             return new ResponseEntity<>(adminId, HttpStatus.BAD_REQUEST);
         }
     }
+    @Deprecated
     @GetMapping("/login/email/{email}/{password}")
     public ResponseEntity<String> emailLogin (@PathVariable("email") String email,
                                               @PathVariable("password") String password) {
@@ -111,7 +123,7 @@ public class AdminController {
     @PostMapping("/forgot/changePassword")
     public ResponseEntity<String> changePassword(@RequestBody Admin admin){
         String response = adminService.changePassword(admin);
-        if(response.equals("Password Changed.")) {
+        if(response.equals("success")) {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(response,HttpStatus.CONFLICT);
