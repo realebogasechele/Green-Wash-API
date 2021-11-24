@@ -43,6 +43,15 @@ public class AdminController {
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
+    @PostMapping("/remove/{adminId}")
+    public ResponseEntity<String> removeAdmin(@PathVariable("adminId") String adminId) {
+        String response = adminService.removeAdmin(adminId);
+        if(response.equals("success")) {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
     @GetMapping("/login/{username}/{password}")
     public ResponseEntity<String> unifiedLogin (@PathVariable("username") String username,
                                              @PathVariable("password") String password) {
@@ -175,7 +184,11 @@ public class AdminController {
     @PostMapping("/agent/add")
     public ResponseEntity<String> addAgent(@RequestBody Agent agent) {
         String status = adminService.addAgent(agent);
-        return new ResponseEntity<>(status, HttpStatus.CREATED);
+        if(status == "success") {
+            return new ResponseEntity<>(status, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/agent/update")
@@ -184,10 +197,14 @@ public class AdminController {
         return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/agent/disable/{agentId}")
+    @DeleteMapping("/agent/remove/{agentId}")
     public ResponseEntity<String> disableAgent(@PathVariable("agentId") String agentId) {
         String status = adminService.disableAgent(agentId);
-        return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        if(status == "success") {
+            return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/agent/get/{agentId}")

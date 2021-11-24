@@ -50,6 +50,12 @@ public class ClientController {
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
+    @PostMapping("/remove/{clientId}")
+    public ResponseEntity<String> removeClient(@PathVariable("clientId") String clientId){
+        String status = clientService.deleteClient(clientId);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
     @GetMapping("/get/{clientId}")
     public ResponseEntity<Client> getClientDetails(@PathVariable("clientId") String clientId){
         Client client = clientService.getClientDetails(clientId);

@@ -7,8 +7,14 @@ import java.util.Optional;
 
 public interface ClientRepo extends MongoRepository<Client, String> {
     Client findByCellNum(String cellNum);
-    Optional<Client> findByCellNumAndPassword(String cellNum, String password);
+
     Client findByUnitNum(String unitNum);
+
+    Optional<Client> findByClientIdAndIsDisabled(String clientId, boolean isDisabled);
+
+    Client findByCellNumAndIsDisabledAndIsBlacklisted(String cellNum, boolean isDisabled, boolean isBlacklisted);
+
+    Client findByEmailAndIsDisabledAndIsBlacklisted(String email, boolean isDisabled, boolean isBlacklisted);
 
     Client findByEmail(String email);
 }

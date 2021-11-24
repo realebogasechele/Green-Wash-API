@@ -24,6 +24,7 @@ public class AdminService {
     private final PackageRepo packageRepo;
     private final BookingRepo bookingRepo;
     private final ClientRepo clientRepo;
+    private final ClientService clientService;
     private final AgentService agentService;
     private final BookingService bookingService;
     private final OtpService otpService;
@@ -33,7 +34,7 @@ public class AdminService {
     private final PBKDF2Hasher hasher;
 
     @Autowired
-    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, BookingRepo bookingRepo, ClientRepo clientRepo, AgentService agentService, BookingService bookingService,
+    public AdminService(AdminRepo adminRepo, MongoTemplate mongoTemplate, ComplexRepo complexRepo, PackageRepo packageRepo, ClientService clientService, BookingRepo bookingRepo, ClientRepo clientRepo, AgentService agentService, BookingService bookingService,
                         OtpService otpService, ComplexService complexService, PackageService packageService,
                         PromotionService promotionService, PBKDF2Hasher hasher) {
         this.adminRepo = adminRepo;
@@ -41,6 +42,7 @@ public class AdminService {
         this.complexRepo = complexRepo;
         this.packageRepo = packageRepo;
         this.bookingRepo = bookingRepo;
+        this.clientService = clientService;
         this.clientRepo = clientRepo;
         this.agentService = agentService;
         this.bookingService = bookingService;
@@ -54,6 +56,7 @@ public class AdminService {
     public String addAdmin(@NotNull Admin admin) {
         if (Objects.isNull(adminRepo.findByCellNum(admin.getCellNum()))) {
             admin.setPassword(hasher.hash(admin.getPassword().toCharArray()));
+            admin.setDisabled(false);
             adminRepo.save(admin);
             return "success";
         } else {
@@ -73,30 +76,31 @@ public class AdminService {
         }
     }
 
-    public String unifiedLogin(String username, String password){
-        Admin cellAdmin = adminRepo.findByCellNum(username);
-        Admin emailAdmin = adminRepo.findByEmail(username);
-        if(!Objects.isNull(cellAdmin) || !Objects.isNull(emailAdmin)){
-            if(!Objects.isNull(cellAdmin)){
+    public String unifiedLogin(String username, String password) {
+        Admin cellAdmin = adminRepo.findByCellNumAndIsDisabled(username, false);
+        Admin emailAdmin = adminRepo.findByEmailAndIsDisabled(username, false);
+        if (!Objects.isNull(cellAdmin) || !Objects.isNull(emailAdmin)) {
+            if (!Objects.isNull(cellAdmin)) {
                 boolean check = hasher.checkPassword(password.toCharArray(), cellAdmin.getPassword());
-                if(check){
+                if (check) {
                     return cellAdmin.getAdminId();
-                }else{
+                } else {
                     return "error";
                 }
-            }else{
+            } else {
                 boolean check = hasher.checkPassword(password.toCharArray(), emailAdmin.getPassword());
-                if(check){
+                if (check) {
                     return emailAdmin.getAdminId();
-                }else{
+                } else {
                     return "error";
                 }
             }
-        }else{
+        } else {
             return "error";
         }
     }
-    public String cellLogin(String cellNum, String password) {
+
+    public String cellLogin(String cellNum, @NotNull String password) {
         Admin admin = adminRepo.findByCellNum(cellNum);
         boolean check = hasher.checkPassword(password.toCharArray(), admin.getPassword());
         if (check) {
@@ -118,7 +122,7 @@ public class AdminService {
 
     //Forgotten Password Related
     public String verifyCellNum(String cellNum) {
-        Admin admin = adminRepo.findByCellNum(cellNum);
+        Admin admin = adminRepo.findByCellNumAndIsDisabled(cellNum, false);
         if (!Objects.isNull(admin)) {
             sendCellOtp(cellNum);
             return admin.getAdminId();
@@ -128,7 +132,7 @@ public class AdminService {
     }
 
     public String verifyEmail(String email) {
-        Admin admin = adminRepo.findByEmail(email);
+        Admin admin = adminRepo.findByEmailAndIsDisabled(email, false);
         if (!Objects.isNull(admin)) {
             sendEmailOtp(email);
             return admin.getAdminId();
@@ -162,6 +166,17 @@ public class AdminService {
         existingAdmin.setPassword(hasher.hash(admin.getPassword().toCharArray()));
         adminRepo.save(existingAdmin);
         return "success";
+    }
+
+    public String removeAdmin(String adminId) {
+        try {
+            Admin admin = adminRepo.findById(adminId).orElseThrow(() -> new AdminNotFoundException("Not Found."));
+            admin.setDisabled(true);
+            adminRepo.save(admin);
+            return "success";
+        } catch (Exception ex) {
+            return "error";
+        }
     }
 
     //Agent Related
@@ -418,18 +433,13 @@ public class AdminService {
     //Client Related
     public List<Client> getClients() {
         List<Client> clients = clientRepo.findAll();
-        for (Client client: clients) {
+        for (Client client : clients) {
             client.setPassword("");
         }
         return clients;
     }
 
     public String removeClient(String clientId) {
-        try {
-            clientRepo.deleteById(clientId);
-            return "success";
-        } catch (Exception ex) {
-            return "error";
-        }
+        return clientService.deleteClient(clientId);
     }
 }

@@ -19,15 +19,18 @@ public class Admin {
     private String email;
     @Field
     private String password;
+    @Field
+    private Boolean isDisabled;
 
     public Admin(){}
 
-    public Admin(String name, String surname, String cellNum, String email, String password) {
+    public Admin(String name, String surname, String cellNum, String email, String password, Boolean isDisabled) {
         this.name = name;
         this.surname = surname;
         this.cellNum = cellNum;
         this.email = email;
         this.password = password;
+        this.isDisabled = isDisabled;
     }
 
     public String getAdminId() {
@@ -76,5 +79,13 @@ public class Admin {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Boolean getDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        isDisabled = disabled;
     }
 }

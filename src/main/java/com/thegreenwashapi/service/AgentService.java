@@ -41,8 +41,9 @@ public class AgentService {
                 complex.getAgents().add(agent.getSurname());
                 complexRepo.save(complex);
                 agent.setPassword(hasher.hash(agent.getPassword().toCharArray()));
+                agent.setDisabled(false);
                 agentRepo.save(agent);
-                return "Success";
+                return "success";
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -57,7 +58,7 @@ public class AgentService {
     }
 
     public String login(String cellNum, String password) {
-        Agent agent = agentRepo.findByCellNum(cellNum);
+        Agent agent = agentRepo.findByCellNumAndIsDisabled(cellNum, false);
         boolean check = hasher.checkPassword(password.toCharArray(), agent.getPassword());
         if(check){
             return agent.getAgentId();
@@ -67,7 +68,8 @@ public class AgentService {
     }
 
     public Agent findById(String agentId) {
-        Agent agent = agentRepo.findById(agentId).orElseThrow(() -> new AgentNotFoundException("Not Found!"));
+        Agent agent = agentRepo.findByIdAndIsDisabled(agentId, false)
+                .orElseThrow(() -> new AgentNotFoundException("Not Found!"));
         agent.setPassword("");
         return agent;
     }
@@ -77,7 +79,14 @@ public class AgentService {
     }
 
     public String disableAgent(String agentId) {
-        return "Agent disabled!";
+        try {
+            Agent agent = agentRepo.findById(agentId).orElseThrow(() -> new AgentNotFoundException("Not Found."));
+            agent.setDisabled(true);
+            agentRepo.save(agent);
+            return "success";
+        }catch (Exception ex){
+            return "error";
+        }
     }
 
     @Deprecated
@@ -86,7 +95,7 @@ public class AgentService {
     }
 
     public List<Agent> findAll() {
-        List<Agent> agents = agentRepo.findAll();
+        List<Agent> agents = agentRepo.findAllByIsDisabled(false);
         for (Agent agent: agents) {
             agent.setPassword("");
         }

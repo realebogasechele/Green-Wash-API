@@ -7,6 +7,7 @@ import com.thegreenwashapi.model.*;
 import com.thegreenwashapi.repository.ClientRepo;
 import com.thegreenwashapi.repository.ComplexRepo;
 import com.thegreenwashapi.model.Package;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,14 +56,20 @@ public class ClientService {
                 return "error";
             } else {
                 Client temp = clientRepo.findByCellNum(client.getCellNum());
-                Client temp2 = clientRepo.findByUnitNum(client.getUnitNum());
+                Client temp2 = clientRepo.findByEmail(client.getEmail());
+                Client temp3 = clientRepo.findByUnitNum(client.getUnitNum());
 
                 if (!Objects.isNull(temp)) {
                     return "error";
                 } else if (!Objects.isNull(temp2)) {
                     return "error";
+                }else if (!Objects.isNull(temp3)) {
+                    return "error";
                 } else {
                     client.setPassword(hasher.hash(client.getPassword().toCharArray()));
+                    client.setCounter(0);
+                    client.setDisabled(false);
+                    client.setBlacklisted(false);
                     clientRepo.save(client);
                     return ("Success!");
                 }
@@ -78,12 +85,19 @@ public class ClientService {
         return "Success";
     }
 
-    public void deleteClient(String clientId) {
-        //deactivate client
+    public String deleteClient(String clientId) {
+        try {
+            Client client = clientRepo.findById(clientId).orElseThrow(() -> new ClientNotFoundException("Not Found."));
+            client.setDisabled(true);
+            clientRepo.save(client);
+            return "Client Profile Deleted.";
+        }catch (Exception ex){
+            return "error";
+        }
     }
 
     public String verifyCellNumber(String cellNum) {
-        Client client = clientRepo.findByCellNum(cellNum);
+        Client client = clientRepo.findByCellNumAndIsDisabledAndIsBlacklisted(cellNum, false, false);
         if (!Objects.isNull(client)) {
             return client.getClientId();
         } else {
@@ -92,7 +106,7 @@ public class ClientService {
     }
 
     public String verifyEmail(String email) {
-        Client client = clientRepo.findByEmail(email);
+        Client client = clientRepo.findByEmailAndIsDisabledAndIsBlacklisted(email, false, false);
         if (!Objects.isNull(client)) {
             return client.getClientId();
         } else {
@@ -100,8 +114,8 @@ public class ClientService {
         }
     }
 
-    public Client login(String cellNum, String password) {
-        Client client = clientRepo.findByCellNum(cellNum);
+    public Client login(String cellNum, @NotNull String password) {
+        Client client = clientRepo.findByCellNumAndIsDisabledAndIsBlacklisted(cellNum, false, false);
         boolean check = hasher.checkPassword(password.toCharArray(), client.getPassword());
         if (check) {
             client.setPassword("");
@@ -114,7 +128,7 @@ public class ClientService {
     //Forgotten Password
     public String changePassword(Client client) {
         try {
-            Client existingClient = clientRepo.findById(client.getClientId()).orElseThrow(() -> new ClientNotFoundException("Not Found."));
+            Client existingClient = clientRepo.findByClientIdAndIsDisabled(client.getClientId(), false).orElseThrow(() -> new ClientNotFoundException("Not Found."));
             existingClient.setPassword(hasher.hash(client.getPassword().toCharArray()));
             clientRepo.save(existingClient);
             return "Password Changed.";

@@ -24,13 +24,17 @@ public class Client {
     @Field
     private String deviceId;
     @Field
-    private Integer otp;
+    private Boolean isDisabled;
+    @Field
+    private Integer counter;
+    @Field
+    private Boolean isBlacklisted;
 
     public Client(){}
 
-    public Client(String complexName, String name, String surname,
-                  String unitNum, String cellNum, String email,
-                  String password, String deviceId, Integer otp) {
+    public Client(String complexName, String name, String surname, String unitNum,
+                  String cellNum, String email, String password, String deviceId,
+                  Boolean isDisabled, Integer counter, Boolean isBlacklisted) {
         this.complexName = complexName;
         this.name = name;
         this.surname = surname;
@@ -39,15 +43,33 @@ public class Client {
         this.email = email;
         this.password = password;
         this.deviceId = deviceId;
-        this.otp = otp;
+        this.isDisabled = isDisabled;
+        this.counter = counter;
+        this.isBlacklisted = isBlacklisted;
     }
 
-    public Integer getOtp() {
-        return otp;
+    public Boolean getDisabled() {
+        return isDisabled;
     }
 
-    public void setOtp(Integer otp) {
-        this.otp = otp;
+    public void setDisabled(Boolean disabled) {
+        isDisabled = disabled;
+    }
+
+    public Integer getCounter() {
+        return counter;
+    }
+
+    public void setCounter(Integer counter) {
+        this.counter = counter;
+    }
+
+    public Boolean getBlacklisted() {
+        return isBlacklisted;
+    }
+
+    public void setBlacklisted(Boolean blacklisted) {
+        isBlacklisted = blacklisted;
     }
 
     public String getDeviceId() {

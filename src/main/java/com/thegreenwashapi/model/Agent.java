@@ -33,10 +33,16 @@ public class Agent {
     private String postalCode;
     @Field
     private String password;
+    @Field
+    private Boolean isDisabled;
 
     public Agent() {}
 
-    public Agent(String complexName, String contractId, String name, String surname, String id, String cellNum, String street1, String street2, String city, String province, String postalCode, String password) {
+    public Agent(String complexName, String contractId, String name,
+                 String surname, String id, String cellNum,
+                 String street1, String street2, String city,
+                 String province, String postalCode, String password,
+                 Boolean isDisabled) {
         this.complexName = complexName;
         this.contractId = contractId;
         this.name = name;
@@ -49,6 +55,7 @@ public class Agent {
         this.province = province;
         this.postalCode = postalCode;
         this.password = password;
+        this.isDisabled = isDisabled;
     }
 
     public String getComplexName() {
@@ -153,5 +160,13 @@ public class Agent {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        isDisabled = disabled;
     }
 }
