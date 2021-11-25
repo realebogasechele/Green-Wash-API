@@ -13,7 +13,7 @@ public interface AgentRepo extends MongoRepository<Agent, String> {
 
     Agent findBySurname(String surname);
 
-    Optional<Agent> findByIdAndIsDisabled(String agentId, boolean isDisabled);
+    Optional<Agent> findByAgentIdAndIsDisabled(String agentId, boolean disabled);
 
     List<Agent> findAllByIsDisabled(boolean isDisabled);
 

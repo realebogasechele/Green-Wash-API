@@ -151,7 +151,8 @@ public class ClientService {
     }
 
     public Agent getAgentDetails(String bookingId) {
-        Agent agent = agentService.findById(bookingService.findById(bookingId).getAgentId());
+        String agentId = bookingService.findById(bookingId).getAgentId();
+        Agent agent = agentService.findById(agentId);
         agent.setPassword("");
         return agent;
     }

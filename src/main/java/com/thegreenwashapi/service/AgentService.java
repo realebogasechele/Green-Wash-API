@@ -68,7 +68,7 @@ public class AgentService {
     }
 
     public Agent findById(String agentId) {
-        Agent agent = agentRepo.findByIdAndIsDisabled(agentId, false)
+        Agent agent = agentRepo.findByAgentIdAndIsDisabled(agentId, false)
                 .orElseThrow(() -> new AgentNotFoundException("Not Found!"));
         agent.setPassword("");
         return agent;
