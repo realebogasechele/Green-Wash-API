@@ -66,7 +66,7 @@ public class ClientController {
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum){
         String response = clientService.verifyCellNumber(cellNum);
         if(response.equals("error")){
-            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }else {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         }
@@ -76,7 +76,7 @@ public class ClientController {
     public ResponseEntity<String> verifyEmail (@PathVariable("email") String email){
         String response = clientService.verifyEmail(email);
         if(response.equals("error")){
-            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }else {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         }
