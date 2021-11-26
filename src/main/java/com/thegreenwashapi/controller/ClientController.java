@@ -45,8 +45,8 @@ public class ClientController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<String> updateClient(@RequestBody Client client){
-        String status = clientService.updateClient(client);
+    public ResponseEntity<Client> updateClient(@RequestBody Client client){
+        Client status = clientService.updateClient(client);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
@@ -79,6 +79,29 @@ public class ClientController {
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
         }else {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }
+    }
+
+    //Account Recovery
+    @GetMapping("/recovery/otp/{username}")
+    public ResponseEntity<String> recoveryOtp(@PathVariable("username") String username){
+        String response = clientService.recoverSendOtp(username);
+        if(response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/recovery/recover/{otpNumber}/{username}")
+    public ResponseEntity<String> recoverAccount(@PathVariable("otpNumber") Integer otpNumber,
+                                                 @PathVariable("username") String username,
+                                                 @PathVariable("time") String time){
+        String response = clientService.recoverAccount(username, otpNumber, time);
+        if(response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        }else{
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 

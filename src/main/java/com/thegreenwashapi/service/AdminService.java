@@ -66,8 +66,9 @@ public class AdminService {
 
     public String updateAdmin(@NotNull Admin admin) {
         try {
-            adminRepo.findById(admin.getAdminId()).orElseThrow(() -> new AdminNotFoundException("Not Found."));
+            Admin existingAdmin = adminRepo.findById(admin.getAdminId()).orElseThrow(() -> new AdminNotFoundException("Not Found."));
             admin.setPassword(hasher.hash(admin.getPassword().toCharArray()));
+            admin.setDisabled(existingAdmin.getDisabled());
             adminRepo.save(admin);
             return "success";
         } catch (Exception ex) {
@@ -120,6 +121,49 @@ public class AdminService {
         }
     }
 
+    //Account Recovery
+    public String recoverSendOtp(String username){
+        try {
+            Admin cellAdmin = adminRepo.findByCellNum(username);
+            Admin emailAdmin = adminRepo.findByEmail(username);
+
+            if (!Objects.isNull(cellAdmin)) {
+                otpService.sendAdminCellOtp(username);
+                return cellAdmin.getAdminId();
+            } else if (!Objects.isNull(emailAdmin)) {
+                otpService.sendAdminEmailOtp(username);
+                return emailAdmin.getAdminId();
+            } else {
+                return "error";
+            }
+        }catch (Exception ex){
+            return "error";
+        }
+    }
+
+    public String recoverAccount(String adminId, Integer otpNumber, String time){
+        try {
+            Admin admin = adminRepo.findById(adminId)
+                    .orElseThrow(()->new AdminNotFoundException("Not Found."));
+
+            if (!Objects.isNull(admin)) {
+                String response = otpService.verifyOtp(otpNumber, time, adminId);
+                if(response.equals(adminId)) {
+                    admin.setDisabled(false);
+                    adminRepo.save(admin);
+                    return "Account Recovered.";
+                }else{
+                    return "error";
+                }
+            } else {
+                return "error";
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return "error";
+        }
+    }
+
     //Forgotten Password Related
     public String verifyCellNum(String cellNum) {
         Admin admin = adminRepo.findByCellNumAndIsDisabled(cellNum, false);
@@ -149,12 +193,12 @@ public class AdminService {
         otpService.sendAdminCellOtp(cellNum);
     }
 
-    public void resendCellOtp(String cellNum) {
-        otpService.resendAdminCellOtp(cellNum);
+    public String resendCellOtp(String cellNum) {
+        return otpService.resendAdminCellOtp(cellNum);
     }
 
-    public void resendEmailOtp(String email) {
-        otpService.resendAdminEmailOtp(email);
+    public String resendEmailOtp(String email) {
+        return otpService.resendAdminEmailOtp(email);
     }
 
     public String verifyOtp(Integer otpNumber, String time, String id) {
@@ -198,6 +242,10 @@ public class AdminService {
 
     public Agent findByAgentId(String agentId) {
         return agentService.findById(agentId);
+    }
+
+    public List<Agent> getAllDisabledAgents(){
+        return agentService.findAllDisabledAgents();
     }
 
     //Complex Related

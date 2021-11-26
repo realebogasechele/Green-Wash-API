@@ -79,10 +79,14 @@ public class ClientService {
         }
     }
 
-    public String updateClient(Client client) {
+    public Client updateClient(Client client) {
+        Client existingClient = clientRepo.findById(client.getClientId()).orElseThrow(()-> new ClientNotFoundException("Not Found."));
+        client.setDisabled(existingClient.getDisabled());
+        client.setBlacklisted(existingClient.getBlacklisted());
+        client.setCounter(existingClient.getCounter());
         client.setPassword(hasher.hash(client.getPassword().toCharArray()));
         clientRepo.save(client);
-        return "Success";
+        return client;
     }
 
     public String deleteClient(String clientId) {
@@ -110,6 +114,81 @@ public class ClientService {
         if (!Objects.isNull(client)) {
             return client.getClientId();
         } else {
+            return "error";
+        }
+    }
+
+    public String recoverSendOtp(String username){
+        try {
+            Client cellClient = clientRepo.findByCellNum(username);
+            Client emailClient = clientRepo.findByEmail(username);
+
+            if (!Objects.isNull(cellClient)) {
+                otpService.sendClientCellOtp(username);
+                return username;
+            } else if (!Objects.isNull(emailClient)) {
+                otpService.sendClientEmailOtp(username);
+                return username;
+            } else {
+                return "error";
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return "error";
+        }
+    }
+
+    public String recoverAccount(String username, Integer otpNumber, String time){
+        try {
+            Client cellClient = clientRepo.findByCellNum(username);
+            Client emailClient = clientRepo.findByEmail(username);
+
+            if (!Objects.isNull(cellClient)) {
+                String response = otpService.verifyOtp(otpNumber, time, username);
+                if(response.equals(username)) {
+                    cellClient.setDisabled(false);
+                    clientRepo.save(cellClient);
+                    return "Account Recovered.";
+                }else{
+                    return "error";
+                }
+            } else if (!Objects.isNull(emailClient)) {
+                String response = otpService.verifyOtp(otpNumber, time, username);
+                if(response.equals(username)) {
+                    emailClient.setDisabled(false);
+                    clientRepo.save(emailClient);
+                    return "Account Recovered.";
+                }else {
+                    return "error";
+                }
+            } else {
+                return "error";
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return "error";
+        }
+    }
+
+    public String permanentRemoval(String username){
+        Client cellClient = clientRepo.findByCellNum(username);
+        Client emailClient = clientRepo.findByEmail(username);
+
+        if(!Objects.isNull(cellClient)){
+            cellClient.setCellNum("");
+            cellClient.setEmail("");
+            cellClient.setPassword("");
+            cellClient.setDisabled(true);
+            clientRepo.save(cellClient);
+            return "Your account has been permanently removed.";
+        }else if(!Objects.isNull(emailClient)){
+            emailClient.setCellNum("");
+            emailClient.setEmail("");
+            emailClient.setPassword("");
+            emailClient.setDisabled(true);
+            clientRepo.save(emailClient);
+            return "Your account has been permanently removed.";
+        }else{
             return "error";
         }
     }

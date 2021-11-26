@@ -53,6 +53,8 @@ public class AgentService {
     }
 
     public String updateAgent(Agent agent) {
+        Agent existingAgent = agentRepo.findById(agent.getAgentId()).orElseThrow(()-> new AgentNotFoundException("Not Found."));
+        agent.setDisabled(existingAgent.getDisabled());
         agentRepo.save(agent);
         return "Agent updated successfully!";
     }
@@ -72,6 +74,10 @@ public class AgentService {
                 .orElseThrow(() -> new AgentNotFoundException("Not Found!"));
         agent.setPassword("");
         return agent;
+    }
+
+    public List<Agent> findAllDisabledAgents(){
+        return agentRepo.findAllByIsDisabled(true);
     }
 
     public List<Booking> viewBookings(String agentId) {

@@ -1,5 +1,6 @@
 package com.thegreenwashapi.service;
 
+import com.thegreenwashapi.model.Admin;
 import com.thegreenwashapi.model.Otp;
 import com.thegreenwashapi.repository.AdminRepo;
 import com.thegreenwashapi.repository.OtpRepo;
@@ -110,7 +111,7 @@ public class OtpService {
                 return "No Otp";
             }
         }else{
-            return "here you are";
+            return "error";
         }
     }
 
@@ -164,19 +165,27 @@ public class OtpService {
         }
     }
 
-    public void resendAdminCellOtp(String cellNum) {
-        Otp otp = otpRepo.findByClientId(cellNum);
+    public String resendAdminCellOtp(String cellNum) {
+        Admin admin = adminRepo.findByCellNum(cellNum);
+        Otp otp = otpRepo.findByClientId(admin.getAdminId());
         if(!Objects.isNull(otp)) {
             otpRepo.delete(otpRepo.findByClientId(cellNum));
             sendAdminCellOtp(cellNum);
+            return "success";
+        }else{
+            return "error";
         }
     }
 
-    public void resendAdminEmailOtp(String email) {
-        Otp otp = otpRepo.findByClientId(email);
+    public String resendAdminEmailOtp(String email) {
+        Admin admin = adminRepo.findByEmail(email);
+        Otp otp = otpRepo.findByClientId(admin.getAdminId());
         if(!Objects.isNull(otp)) {
             otpRepo.delete(otp);
             sendAdminEmailOtp(email);
+            return "success";
+        }else {
+            return "error";
         }
     }
 

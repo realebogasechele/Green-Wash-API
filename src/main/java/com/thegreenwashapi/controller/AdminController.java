@@ -3,7 +3,6 @@ package com.thegreenwashapi.controller;
 import com.thegreenwashapi.model.*;
 import com.thegreenwashapi.service.AdminService;
 import com.thegreenwashapi.model.Package;
-import io.jsonwebtoken.lang.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,9 @@ public class AdminController {
     @PostMapping("/signUp")
     public ResponseEntity<String> addAdmin(@RequestBody Admin admin) {
         String response = adminService.addAdmin(admin);
-        if(response.equals("success")) {
+        if (response.equals("success")) {
             return new ResponseEntity<>(response, HttpStatus.CREATED);
-        }else{
+        } else {
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
@@ -37,52 +36,31 @@ public class AdminController {
     @PostMapping("/update")
     public ResponseEntity<String> updateAdmin(@RequestBody Admin admin) {
         String response = adminService.updateAdmin(admin);
-        if(response.equals("success")) {
+        if (response.equals("success")) {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
-        }else{
+        } else {
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
+
     @PostMapping("/remove/{adminId}")
     public ResponseEntity<String> removeAdmin(@PathVariable("adminId") String adminId) {
         String response = adminService.removeAdmin(adminId);
-        if(response.equals("success")) {
+        if (response.equals("success")) {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
-        }else{
+        } else {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/login/{username}/{password}")
-    public ResponseEntity<String> unifiedLogin (@PathVariable("username") String username,
-                                             @PathVariable("password") String password) {
-        String adminId = adminService.unifiedLogin(username, password);
-        if(!adminId.equals("error")) {
-            return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
-        }else{
-            return new ResponseEntity<>("Invalid Cell Number or Password", HttpStatus.BAD_REQUEST);
-        }
-    }
 
-    @Deprecated
-    @GetMapping("/login/cell/{cellNum}/{password}")
-    public ResponseEntity<String> cellLogin (@PathVariable("cellNum") String cellNum,
-                                             @PathVariable("password") String password) {
-        String adminId = adminService.cellLogin(cellNum, password);
-        if(!adminId.equals("error")) {
+    @GetMapping("/login/{username}/{password}")
+    public ResponseEntity<String> unifiedLogin(@PathVariable("username") String username,
+                                               @PathVariable("password") String password) {
+        String adminId = adminService.unifiedLogin(username, password);
+        if (!adminId.equals("error")) {
             return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
-        }else{
-            return new ResponseEntity<>(adminId, HttpStatus.BAD_REQUEST);
-        }
-    }
-    @Deprecated
-    @GetMapping("/login/email/{email}/{password}")
-    public ResponseEntity<String> emailLogin (@PathVariable("email") String email,
-                                              @PathVariable("password") String password) {
-        String adminId = adminService.emailLogin(email, password);
-        if(!adminId.equals("error")) {
-            return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
-        }else{
-            return new ResponseEntity<>(adminId, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>("Invalid Cell Number or Password", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -92,11 +70,34 @@ public class AdminController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
+    //Account Recovery
+    @GetMapping("/recovery/otp/{username}")
+    public ResponseEntity<String> recoveryOtp(@PathVariable("username") String username) {
+        String response = adminService.recoverSendOtp(username);
+        if (response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/recovery/recover/{otpNumber}/{adminId}/{time}")
+    public ResponseEntity<String> recoverAccount(@PathVariable("otpNumber") Integer otpNumber,
+                                                 @PathVariable("adminId") String adminId,
+                                                 @PathVariable("time") String time) {
+        String response = adminService.recoverAccount(adminId, otpNumber, time);
+        if (!response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     //Forgotten Password Related
     @PostMapping("/forgot/verify/cell/{cellNum}")
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum) {
         String response = adminService.verifyCellNum(cellNum);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/forgot/verify/email/{email}")
@@ -110,51 +111,62 @@ public class AdminController {
                                             @PathVariable("time") String time,
                                             @PathVariable("id") String id) {
         String response = adminService.verifyOtp(otpNumber, time, id);
-        if(response.equals("OTP ran out of time")){
+        if (response.equals("OTP ran out of time")) {
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-        }else if(response.equals("Invalid OTP")){
+        } else if (response.equals("Invalid OTP")) {
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
-        }else {
+        } else {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
 
     @PostMapping("/forgot/resendOtp/cell/{cellNum}")
-    public void resendCellOtp(@PathVariable("cellNum") String cellNum){
-        adminService.resendCellOtp(cellNum);
+    public ResponseEntity<String> resendCellOtp(@PathVariable("cellNum") String cellNum) {
+        String response = adminService.resendCellOtp(cellNum);
+        if (response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/forgot/resendOtp/email/{email}")
-    public void resendEmailOtp(@PathVariable("email") String email){
-        adminService.resendEmailOtp(email);
+    public ResponseEntity<String> resendEmailOtp(@PathVariable("email") String email) {
+        String response = adminService.resendEmailOtp(email);
+        if (response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/forgot/changePassword")
-    public ResponseEntity<String> changePassword(@RequestBody Admin admin){
+    public ResponseEntity<String> changePassword(@RequestBody Admin admin) {
         String response = adminService.changePassword(admin);
-        if(response.equals("success")) {
+        if (response.equals("success")) {
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(response,HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
 
     //Client Related
     @GetMapping("/client/get/all")
-    public ResponseEntity<List<Client>> getClients(){
+    public ResponseEntity<List<Client>> getClients() {
         List<Client> response = adminService.getClients();
-        if(response.isEmpty()){
+        if (response.isEmpty()) {
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-        }else {
+        } else {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
+
     @DeleteMapping("/client/remove/{clientId}")
-    public ResponseEntity<String> removeClient(@PathVariable("clientId") String clientId){
+    public ResponseEntity<String> removeClient(@PathVariable("clientId") String clientId) {
         String response = adminService.removeClient(clientId);
-        if(!response.equals("error")) {
+        if (!response.equals("error")) {
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
@@ -184,9 +196,9 @@ public class AdminController {
     @PostMapping("/agent/add")
     public ResponseEntity<String> addAgent(@RequestBody Agent agent) {
         String status = adminService.addAgent(agent);
-        if(status == "success") {
+        if (status == "success") {
             return new ResponseEntity<>(status, HttpStatus.CREATED);
-        }else{
+        } else {
             return new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
         }
     }
@@ -200,9 +212,9 @@ public class AdminController {
     @DeleteMapping("/agent/remove/{agentId}")
     public ResponseEntity<String> disableAgent(@PathVariable("agentId") String agentId) {
         String status = adminService.disableAgent(agentId);
-        if(status == "success") {
+        if (status == "success") {
             return new ResponseEntity<>(status, HttpStatus.ACCEPTED);
-        }else{
+        } else {
             return new ResponseEntity<>(status, HttpStatus.BAD_REQUEST);
         }
     }
@@ -216,11 +228,14 @@ public class AdminController {
     @GetMapping("/agent/get/all")
     public ResponseEntity<List<Agent>> getAllAgent() {
         List<Agent> agents = adminService.getAllAgents();
-        if(agents.isEmpty()){
-            return new ResponseEntity<>(agents, HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(agents, HttpStatus.ACCEPTED);
-        }
+        return new ResponseEntity<>(agents, HttpStatus.ACCEPTED);
+
+    }
+
+    @GetMapping("/agent/get/all/disabled")
+    public ResponseEntity<List<Agent>> getAllDisabledAgent() {
+        List<Agent> agents = adminService.getAllDisabledAgents();
+        return new ResponseEntity<>(agents, HttpStatus.ACCEPTED);
     }
 
     //Complex Related
@@ -245,9 +260,9 @@ public class AdminController {
     @GetMapping("/complex/get/all")
     public ResponseEntity<List<Complex>> getComplexes() {
         List<Complex> complexes = adminService.getComplexes();
-        if(complexes.isEmpty()) {
+        if (complexes.isEmpty()) {
             return new ResponseEntity<>(complexes, HttpStatus.NO_CONTENT);
-        }else{
+        } else {
             return new ResponseEntity<>(complexes, HttpStatus.ACCEPTED);
         }
     }
@@ -257,12 +272,13 @@ public class AdminController {
         Complex complex = adminService.findByComplexId(complexId);
         return new ResponseEntity<>(complex, HttpStatus.ACCEPTED);
     }
+
     @GetMapping("/complex/get/all/names")
-    public ResponseEntity<List<String>> getComplexNames(){
+    public ResponseEntity<List<String>> getComplexNames() {
         List<String> response = adminService.getAllComplexNames();
-        if(response.isEmpty()){
+        if (response.isEmpty()) {
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-        }else {
+        } else {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
     }
@@ -301,9 +317,9 @@ public class AdminController {
     @GetMapping("/package/get/all/names")
     public ResponseEntity<List<String>> getPackageNames() {
         List<String> response = adminService.getPackageNames();
-        if(response.isEmpty()){
+        if (response.isEmpty()) {
             return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
-        }else {
+        } else {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         }
     }
@@ -371,13 +387,13 @@ public class AdminController {
     }
 
     @GetMapping("/query/typeOfBookingsToday")
-    public ResponseEntity<List<String>> typeOfBookings(){
+    public ResponseEntity<List<String>> typeOfBookings() {
         List<String> response = adminService.typeOfBookingsToday();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/query/totalEarningsToday")
-    public ResponseEntity<List<String>> totalEarnings(){
+    public ResponseEntity<List<String>> totalEarnings() {
         List<String> response = adminService.totalEarningsToday();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -388,5 +404,29 @@ public class AdminController {
     public ResponseEntity<String> mostPopulatedComplex() {
         String response = adminService.mostPopulatedComplex();
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Deprecated
+    @GetMapping("/login/cell/{cellNum}/{password}")
+    public ResponseEntity<String> cellLogin(@PathVariable("cellNum") String cellNum,
+                                            @PathVariable("password") String password) {
+        String adminId = adminService.cellLogin(cellNum, password);
+        if (!adminId.equals("error")) {
+            return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>(adminId, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Deprecated
+    @GetMapping("/login/email/{email}/{password}")
+    public ResponseEntity<String> emailLogin(@PathVariable("email") String email,
+                                             @PathVariable("password") String password) {
+        String adminId = adminService.emailLogin(email, password);
+        if (!adminId.equals("error")) {
+            return new ResponseEntity<>(adminId, HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>(adminId, HttpStatus.BAD_REQUEST);
+        }
     }
 }
