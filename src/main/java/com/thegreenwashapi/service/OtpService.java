@@ -105,10 +105,10 @@ public class OtpService {
                     return otp.getClientId();
                 } else {
                     otpRepo.delete(otp);
-                    return "OTP ran out of time";
+                    return "error";
                 }
             } else {
-                return "No Otp";
+                return "error";
             }
         }else{
             return "error";

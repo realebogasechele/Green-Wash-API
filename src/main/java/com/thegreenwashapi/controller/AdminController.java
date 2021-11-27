@@ -93,6 +93,16 @@ public class AdminController {
         }
     }
 
+    @PostMapping("/recovery/resendOtp/{username}")
+    public ResponseEntity<String> resendOtp(@PathVariable("username") String username) {
+        String response = adminService.resendOtp(username);
+        if (response.equals("error")) {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
+
     //Forgotten Password Related
     @PostMapping("/forgot/verify/cell/{cellNum}")
     public ResponseEntity<String> verifyCellNum(@PathVariable("cellNum") String cellNum) {

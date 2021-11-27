@@ -193,6 +193,19 @@ public class AdminService {
         otpService.sendAdminCellOtp(cellNum);
     }
 
+    public String resendOtp(String username){
+        Admin cellAdmin = adminRepo.findByCellNum(username);
+        Admin emailAdmin = adminRepo.findByEmail(username);
+
+        if(!Objects.isNull(cellAdmin)){
+            return otpService.resendAdminCellOtp(username);
+        }else if(!Objects.isNull(emailAdmin)){
+            return otpService.resendAdminEmailOtp(username);
+        }else{
+            return "error";
+        }
+    }
+
     public String resendCellOtp(String cellNum) {
         return otpService.resendAdminCellOtp(cellNum);
     }
