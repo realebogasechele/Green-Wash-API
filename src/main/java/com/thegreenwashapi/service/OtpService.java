@@ -66,7 +66,7 @@ public class OtpService {
 
             cellNum = cellNum.substring(0, 1).replace("0", "+27") + cellNum.substring(1);
 
-            String msg = "Your Green Wash verification code is: " + otpNumber;
+            String msg = "Your Green Wash One-Time Pin is: " + otpNumber;
             Message.creator(new PhoneNumber(cellNum), MESSAGING_SERVICE_SID, msg)
                     .create();
         } catch (Exception ex) {
@@ -132,7 +132,7 @@ public class OtpService {
 
             cellNum = cellNum.substring(0, 1).replace("0", "+27") + cellNum.substring(1);
 
-            String msg = "Your Green Wash verification code is: " + otpNumber;
+            String msg = "Your Green Wash One-Time Pin is: " + otpNumber;
             Message.creator(new PhoneNumber(cellNum), MESSAGING_SERVICE_SID, msg)
                     .create();
         } catch (Exception ex) {

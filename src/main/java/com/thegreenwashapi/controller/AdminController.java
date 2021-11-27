@@ -74,7 +74,7 @@ public class AdminController {
     @GetMapping("/recovery/otp/{username}")
     public ResponseEntity<String> recoveryOtp(@PathVariable("username") String username) {
         String response = adminService.recoverSendOtp(username);
-        if (response.equals("error")) {
+        if (!response.equals("error")) {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
