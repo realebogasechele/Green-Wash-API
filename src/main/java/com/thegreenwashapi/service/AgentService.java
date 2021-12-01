@@ -55,6 +55,7 @@ public class AgentService {
     public String updateAgent(Agent agent) {
         Agent existingAgent = agentRepo.findById(agent.getAgentId()).orElseThrow(()-> new AgentNotFoundException("Not Found."));
         agent.setDisabled(existingAgent.getDisabled());
+        agent.setPassword(hasher.hash(agent.getPassword().toCharArray()));
         agentRepo.save(agent);
         return "Agent updated successfully!";
     }
