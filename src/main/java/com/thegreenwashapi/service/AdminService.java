@@ -124,8 +124,8 @@ public class AdminService {
     //Account Recovery
     public String recoverSendOtp(String username){
         try {
-            Admin cellAdmin = adminRepo.findByCellNum(username);
-            Admin emailAdmin = adminRepo.findByEmail(username);
+            Admin cellAdmin = adminRepo.findByCellNumAndIsDisabled(username, true);
+            Admin emailAdmin = adminRepo.findByEmailAndIsDisabled(username, true);
 
             if (!Objects.isNull(cellAdmin)) {
                 otpService.sendAdminCellOtp(username);
